@@ -15,9 +15,13 @@
     "test:watch": "vitest",
     "typecheck": "pnpm -r typecheck",
     "samples:fetch": "node scripts/samples/fetch.mjs",
-    "samples:build": "node scripts/samples/build.mjs"
+    "samples:build": "node scripts/samples/build.mjs",
+    "render": "node scripts/render.mjs"
   },
   "devDependencies": {
+    "@haku/audio": "workspace:*",
+    "@haku/core": "workspace:*",
+    "@haku/protocol": "workspace:*",
     "@types/node": "^26.6.6",
     "typescript": "^7.0.2",
     "vitest": "^5.0.5"

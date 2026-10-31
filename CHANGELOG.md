@@ -21,3 +21,24 @@
 ### 🎹 Samples
 - Upright piano, Wurlitzer, glockenspiel, marimba, harp, a drum kit, and two seamless rain loops (7.7 MB)
 - Scripts to download the original recordings and rebuild the sample set
+
+### 🔊 Audio engine
+- Plays every instrument: the sampled ones with velocity layers, plus FM keys, a warm pad, a soft pluck, and a round bass built from Tone.js synths
+- Drum kit with velocity layers and round robins
+- Shared lofi chain with tape saturation and a warmth low-pass, wobble, reverb, bus compression, and a limiter
+- Generated vinyl crackle and hiss, plus the rain loops, mixed in after the compressor so they never pump
+- Brush size sets how bright a note sounds
+- Offline rendering to WAV, using the same audio graph in the browser and in Node
+- First pass at mix balance: every mood lands around -13 LUFS with peaks under -1 dBFS
+
+### 🖌️ Web app
+- Drawing canvas with a chord strip, beat grid, the notes each layer plays, and a moving playhead
+- Pen pressure, mouse, and touch drawing, plus a box eraser
+- Layers with mute, solo, volume, pan, instrument, harmony mode, octave, and drum kit
+- Band controls for chords, bass, and drums, plus swing and humanize
+- Mix controls for master, warmth, crackle, reverb, wobble, and rain
+- Tempo, key, chords, bars, and mood in the top bar
+- Keyboard shortcuts: Space plays and stops, 1 to 5 pick brushes, E toggles the eraser
+
+### 🧰 Tooling
+- `pnpm render` renders each mood (or a saved project) to WAV and prints peak, RMS, and LUFS

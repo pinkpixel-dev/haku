@@ -1,0 +1,41 @@
+/* Design tokens. Colors come from the Haku icon: warm wood, rose-coral label, sage leaves. */
+:root {
+  --font-ui: 'Figtree Variable', 'Figtree', sans-serif;
+  --font-display: 'Fraunces Variable', 'Fraunces', serif;
+
+  --bg: oklch(0.2 0.008 60);
+  --surface: oklch(0.232 0.009 60);
+  --raised: oklch(0.27 0.01 60);
+  --sunken: oklch(0.18 0.007 60);
+  --border: oklch(0.33 0.011 60);
+  --border-strong: oklch(0.42 0.014 60);
+
+  --text: oklch(0.95 0.006 80);
+  --text-muted: oklch(0.72 0.012 70);
+  --text-faint: oklch(0.56 0.012 70);
+
+  --coral: oklch(0.73 0.11 35);
+  --coral-strong: oklch(0.78 0.12 35);
+  --coral-ink: oklch(0.24 0.04 35);
+  --sage: oklch(0.72 0.06 145);
+  --wood: oklch(0.74 0.07 65);
+  --danger: oklch(0.68 0.15 25);
+
+  --focus: oklch(0.85 0.09 70);
+
+  --radius-sm: 6px;
+  --radius: 9px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+
+  --text-xs: 11px;
+  --text-sm: 12.5px;
+  --text-md: 14px;
+  --text-lg: 17px;
+
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --fast: 120ms;
+}

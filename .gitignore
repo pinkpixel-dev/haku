@@ -5,3 +5,5 @@ dist/
 DOCS/
 # raw sample downloads (large); processed samples are committed
 assets/sources/
+# offline renders from scripts/render.mjs
+renders/

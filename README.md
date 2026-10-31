@@ -7,7 +7,7 @@ You sketch a line and Haku reads it as a melody: left to right is time, up and d
 There's also a CLI and an MCP server, so AI agents can draw music with the same tools you use.
 
 > [!NOTE]
-> Haku is early. The music engine, the command protocol, and the sample set are done and tested. The web app, the CLI, and the MCP server are being built now. See `DOCS/ROADMAP.md`.
+> Haku is early. The music engine, the audio engine, and a working web app are done, so you can draw and hear loops right now. The cozy look, saving, the CLI, and the MCP server are still being built. See `DOCS/ROADMAP.md`.
 
 ## What it does (so far)
 
@@ -16,7 +16,8 @@ There's also a CLI and an MCP server, so AI agents can draw music with the same 
 - **Reads a few gestures.** Tap for a single note, a short vertical line strums the chord, a tight zigzag plays a trill, a quick flick adds a grace note.
 - **Plays a backing band.** Voice-led jazzy chords (7ths, 9ths, 13ths), roots, walking, or dub bass, and five drum grooves from dusty boom bap to lazy bossa.
 - **Comes with moods.** Rainy study, late-night train, sunny café, dusk walk, and snowy window. Each one sets the tempo, key, chords, band, and mix.
-- **Exports MIDI** with a track per layer.
+- **Sounds like lofi.** Sampled upright piano, Wurlitzer, glock, marimba, and harp, synth keys, pads, plucks, and bass, and a real drum kit, all run through tape warmth, wobble, reverb, vinyl crackle, and rain.
+- **Exports MIDI** with a track per layer, and renders WAV offline (the browser and Node use the same audio code, so they sound the same).
 
 ## Running it
 
@@ -24,9 +25,19 @@ You'll need Node 22.18 or newer and pnpm. Rebuilding the samples also needs ffmp
 
 ```bash
 pnpm install
+pnpm --filter @haku/web dev
+```
+
+Then open http://localhost:5178, draw on the canvas, and press play (or Space). The number keys 1 to 5 pick brushes and E switches to the eraser. Right now a reload starts a fresh loop, since saving isn't in yet.
+
+To run the tests and typecheck everything:
+
+```bash
 pnpm test
 pnpm typecheck
 ```
+
+`pnpm render` renders every mood with a little demo melody to `./renders` and prints the peak, RMS, and loudness of each. It's mostly there for tuning the mix. Add `--mood sunny-cafe` for just one, or `--project path/to/project.json` to render a saved project.
 
 The processed samples are already in `assets/samples/`. To rebuild them from the original recordings:
 
