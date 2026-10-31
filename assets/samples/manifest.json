@@ -1,0 +1,368 @@
+{
+  "version": 1,
+  "instruments": {
+    "piano": {
+      "credit": {
+        "name": "Upright Piano (VSCO 2 CE)",
+        "author": "Simon Dalzell of Ivy Audio, via Versilian Studios",
+        "license": "CC0-1.0",
+        "url": "https://github.com/sgossner/VSCO-2-CE"
+      },
+      "release": 1.2,
+      "layers": [
+        {
+          "maxVelocity": 0.55,
+          "zones": {
+            "29": "piano/v0_29.ogg",
+            "33": "piano/v0_33.ogg",
+            "37": "piano/v0_37.ogg",
+            "41": "piano/v0_41.ogg",
+            "45": "piano/v0_45.ogg",
+            "49": "piano/v0_49.ogg",
+            "53": "piano/v0_53.ogg",
+            "57": "piano/v0_57.ogg",
+            "61": "piano/v0_61.ogg",
+            "65": "piano/v0_65.ogg",
+            "69": "piano/v0_69.ogg",
+            "73": "piano/v0_73.ogg",
+            "77": "piano/v0_77.ogg",
+            "81": "piano/v0_81.ogg",
+            "85": "piano/v0_85.ogg",
+            "89": "piano/v0_89.ogg",
+            "93": "piano/v0_93.ogg",
+            "97": "piano/v0_97.ogg"
+          }
+        },
+        {
+          "maxVelocity": 1,
+          "zones": {
+            "29": "piano/v1_29.ogg",
+            "33": "piano/v1_33.ogg",
+            "37": "piano/v1_37.ogg",
+            "41": "piano/v1_41.ogg",
+            "45": "piano/v1_45.ogg",
+            "49": "piano/v1_49.ogg",
+            "53": "piano/v1_53.ogg",
+            "57": "piano/v1_57.ogg",
+            "61": "piano/v1_61.ogg",
+            "65": "piano/v1_65.ogg",
+            "69": "piano/v1_69.ogg",
+            "73": "piano/v1_73.ogg",
+            "77": "piano/v1_77.ogg",
+            "81": "piano/v1_81.ogg",
+            "85": "piano/v1_85.ogg",
+            "89": "piano/v1_89.ogg",
+            "93": "piano/v1_93.ogg",
+            "97": "piano/v1_97.ogg"
+          }
+        }
+      ]
+    },
+    "wurli": {
+      "credit": {
+        "name": "Wurlitzer EP200",
+        "author": "Greg Sullivan, sfz mapping by kinwie",
+        "license": "CC-BY-3.0",
+        "url": "https://github.com/sfzinstruments/GregSullivan.E-Pianos"
+      },
+      "release": 0.6,
+      "layers": [
+        {
+          "maxVelocity": 0.6,
+          "zones": {
+            "33": "wurli/v0_33.ogg",
+            "40": "wurli/v0_40.ogg",
+            "45": "wurli/v0_45.ogg",
+            "51": "wurli/v0_51.ogg",
+            "56": "wurli/v0_56.ogg",
+            "61": "wurli/v0_61.ogg",
+            "66": "wurli/v0_66.ogg",
+            "71": "wurli/v0_71.ogg",
+            "73": "wurli/v0_73.ogg",
+            "79": "wurli/v0_79.ogg",
+            "85": "wurli/v0_85.ogg",
+            "92": "wurli/v0_92.ogg"
+          }
+        },
+        {
+          "maxVelocity": 1,
+          "zones": {
+            "33": "wurli/v1_33.ogg",
+            "36": "wurli/v1_36.ogg",
+            "41": "wurli/v1_41.ogg",
+            "47": "wurli/v1_47.ogg",
+            "52": "wurli/v1_52.ogg",
+            "56": "wurli/v1_56.ogg",
+            "61": "wurli/v1_61.ogg",
+            "68": "wurli/v1_68.ogg",
+            "73": "wurli/v1_73.ogg",
+            "79": "wurli/v1_79.ogg",
+            "85": "wurli/v1_85.ogg",
+            "92": "wurli/v1_92.ogg"
+          }
+        }
+      ]
+    },
+    "glock": {
+      "credit": {
+        "name": "Glockenspiel (VSCO 2 CE)",
+        "author": "Versilian Studios",
+        "license": "CC0-1.0",
+        "url": "https://github.com/sgossner/VSCO-2-CE"
+      },
+      "release": 1.5,
+      "layers": [
+        {
+          "maxVelocity": 1,
+          "zones": {
+            "79": "glock/v0_79.ogg",
+            "84": "glock/v0_84.ogg",
+            "91": "glock/v0_91.ogg",
+            "96": "glock/v0_96.ogg",
+            "103": "glock/v0_103.ogg",
+            "108": "glock/v0_108.ogg"
+          }
+        }
+      ]
+    },
+    "marimba": {
+      "credit": {
+        "name": "Marimba (VSCO 2 CE)",
+        "author": "Versilian Studios",
+        "license": "CC0-1.0",
+        "url": "https://github.com/sgossner/VSCO-2-CE"
+      },
+      "release": 0.8,
+      "layers": [
+        {
+          "maxVelocity": 1,
+          "zones": {
+            "41": "marimba/v0_41.ogg",
+            "48": "marimba/v0_48.ogg",
+            "55": "marimba/v0_55.ogg",
+            "59": "marimba/v0_59.ogg",
+            "65": "marimba/v0_65.ogg",
+            "72": "marimba/v0_72.ogg",
+            "79": "marimba/v0_79.ogg",
+            "83": "marimba/v0_83.ogg",
+            "89": "marimba/v0_89.ogg",
+            "96": "marimba/v0_96.ogg"
+          }
+        }
+      ]
+    },
+    "harp": {
+      "credit": {
+        "name": "Harp (VSCO 2 CE)",
+        "author": "Versilian Studios",
+        "license": "CC0-1.0",
+        "url": "https://github.com/sgossner/VSCO-2-CE"
+      },
+      "release": 1.5,
+      "layers": [
+        {
+          "maxVelocity": 1,
+          "zones": {
+            "28": "harp/v0_28.ogg",
+            "31": "harp/v0_31.ogg",
+            "35": "harp/v0_35.ogg",
+            "38": "harp/v0_38.ogg",
+            "41": "harp/v0_41.ogg",
+            "45": "harp/v0_45.ogg",
+            "48": "harp/v0_48.ogg",
+            "52": "harp/v0_52.ogg",
+            "55": "harp/v0_55.ogg",
+            "59": "harp/v0_59.ogg",
+            "62": "harp/v0_62.ogg",
+            "65": "harp/v0_65.ogg",
+            "69": "harp/v0_69.ogg",
+            "72": "harp/v0_72.ogg",
+            "76": "harp/v0_76.ogg",
+            "79": "harp/v0_79.ogg",
+            "83": "harp/v0_83.ogg",
+            "86": "harp/v0_86.ogg",
+            "89": "harp/v0_89.ogg",
+            "93": "harp/v0_93.ogg",
+            "95": "harp/v0_95.ogg",
+            "98": "harp/v0_98.ogg",
+            "101": "harp/v0_101.ogg"
+          }
+        }
+      ]
+    }
+  },
+  "drums": {
+    "credit": {
+      "name": "Big Rusty Drums",
+      "author": "Karoryfer Samples",
+      "license": "CC0-1.0",
+      "url": "https://github.com/sfzinstruments/karoryfer.big-rusty-drums"
+    },
+    "pieces": {
+      "kick": [
+        {
+          "maxVelocity": 0.6,
+          "files": [
+            "drums/kick_v0_r1.ogg",
+            "drums/kick_v0_r2.ogg"
+          ]
+        },
+        {
+          "maxVelocity": 1,
+          "files": [
+            "drums/kick_v1_r1.ogg",
+            "drums/kick_v1_r2.ogg"
+          ]
+        }
+      ],
+      "snare": [
+        {
+          "maxVelocity": 0.6,
+          "files": [
+            "drums/snare_v0_r1.ogg",
+            "drums/snare_v0_r2.ogg"
+          ]
+        },
+        {
+          "maxVelocity": 1,
+          "files": [
+            "drums/snare_v1_r1.ogg",
+            "drums/snare_v1_r2.ogg"
+          ]
+        }
+      ],
+      "brush": [
+        {
+          "maxVelocity": 0.6,
+          "files": [
+            "drums/brush_v0_r1.ogg",
+            "drums/brush_v0_r2.ogg"
+          ]
+        },
+        {
+          "maxVelocity": 1,
+          "files": [
+            "drums/brush_v1_r1.ogg",
+            "drums/brush_v1_r2.ogg"
+          ]
+        }
+      ],
+      "rim": [
+        {
+          "maxVelocity": 0.6,
+          "files": [
+            "drums/rim_v0_r1.ogg",
+            "drums/rim_v0_r2.ogg"
+          ]
+        },
+        {
+          "maxVelocity": 1,
+          "files": [
+            "drums/rim_v1_r1.ogg",
+            "drums/rim_v1_r2.ogg"
+          ]
+        }
+      ],
+      "hat": [
+        {
+          "maxVelocity": 0.6,
+          "files": [
+            "drums/hat_v0_r1.ogg",
+            "drums/hat_v0_r2.ogg"
+          ]
+        },
+        {
+          "maxVelocity": 1,
+          "files": [
+            "drums/hat_v1_r1.ogg",
+            "drums/hat_v1_r2.ogg"
+          ]
+        }
+      ],
+      "brushhat": [
+        {
+          "maxVelocity": 0.6,
+          "files": [
+            "drums/brushhat_v0_r1.ogg",
+            "drums/brushhat_v0_r2.ogg"
+          ]
+        },
+        {
+          "maxVelocity": 1,
+          "files": [
+            "drums/brushhat_v1_r1.ogg",
+            "drums/brushhat_v1_r2.ogg"
+          ]
+        }
+      ],
+      "openhat": [
+        {
+          "maxVelocity": 0.6,
+          "files": [
+            "drums/openhat_v0_r1.ogg",
+            "drums/openhat_v0_r2.ogg"
+          ]
+        },
+        {
+          "maxVelocity": 1,
+          "files": [
+            "drums/openhat_v1_r1.ogg",
+            "drums/openhat_v1_r2.ogg"
+          ]
+        }
+      ],
+      "ride": [
+        {
+          "maxVelocity": 0.6,
+          "files": [
+            "drums/ride_v0_r1.ogg",
+            "drums/ride_v0_r2.ogg"
+          ]
+        },
+        {
+          "maxVelocity": 1,
+          "files": [
+            "drums/ride_v1_r1.ogg",
+            "drums/ride_v1_r2.ogg"
+          ]
+        }
+      ],
+      "tom": [
+        {
+          "maxVelocity": 0.6,
+          "files": [
+            "drums/tom_v0_r1.ogg",
+            "drums/tom_v0_r2.ogg"
+          ]
+        },
+        {
+          "maxVelocity": 1,
+          "files": [
+            "drums/tom_v1_r1.ogg",
+            "drums/tom_v1_r2.ogg"
+          ]
+        }
+      ]
+    }
+  },
+  "ambience": {
+    "rain_roof": {
+      "file": "ambience/rain_roof.ogg",
+      "credit": {
+        "name": "Soft rain on roof window",
+        "author": "Metadex",
+        "license": "CC0-1.0",
+        "url": "https://freesound.org/people/Metadex/sounds/235827/"
+      }
+    },
+    "rain_window": {
+      "file": "ambience/rain_window.ogg",
+      "credit": {
+        "name": "January rain on a window",
+        "author": "mmorgaine",
+        "license": "CC0-1.0",
+        "url": "https://freesound.org/people/mmorgaine/sounds/333510/"
+      }
+    }
+  }
+}

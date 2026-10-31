@@ -1,0 +1,25 @@
+{
+  "name": "haku",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Draw on a canvas, get cozy lofi music. With a CLI and MCP server so AI agents can draw too.",
+  "license": "Apache-2.0",
+  "author": "Pink Pixel <admin@pinkpixel.dev> (https://pinkpixel.dev)",
+  "type": "module",
+  "packageManager": "pnpm@11.21.0",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "pnpm -r typecheck",
+    "samples:fetch": "node scripts/samples/fetch.mjs",
+    "samples:build": "node scripts/samples/build.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5"
+  }
+}
