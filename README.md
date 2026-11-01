@@ -6,9 +6,6 @@ You sketch a line and Haku reads it as a melody: left to right is time, up and d
 
 There's also a CLI and an MCP server, so AI agents can draw music with the same tools you use.
 
-> [!NOTE]
-> Haku is early. The web app is all there (draw loops, build songs out of scenes, save your work, export WAV or MIDI), and so are the CLI and the MCP server. What's left is mostly polish. See `DOCS/ROADMAP.md`.
-
 ## What it does (so far)
 
 - **Turns strokes into notes.** Pencil for eighth-note melodies, brush for long soft notes, chalk for two-note harmonies, spray for sparkles, stamp for one hit per step.
