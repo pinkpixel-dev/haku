@@ -189,6 +189,149 @@
           }
         }
       ]
+    },
+    "vibes": {
+      "credit": {
+        "name": "Vibraphone, soft mallets (VCSL)",
+        "author": "Versilian Studios",
+        "license": "CC0-1.0",
+        "url": "https://github.com/sgossner/VCSL"
+      },
+      "release": 1.5,
+      "layers": [
+        {
+          "maxVelocity": 0.6,
+          "zones": {
+            "53": "vibes/v0_53.ogg",
+            "57": "vibes/v0_57.ogg",
+            "60": "vibes/v0_60.ogg",
+            "64": "vibes/v0_64.ogg",
+            "67": "vibes/v0_67.ogg",
+            "71": "vibes/v0_71.ogg",
+            "74": "vibes/v0_74.ogg",
+            "77": "vibes/v0_77.ogg",
+            "81": "vibes/v0_81.ogg",
+            "84": "vibes/v0_84.ogg",
+            "88": "vibes/v0_88.ogg"
+          }
+        },
+        {
+          "maxVelocity": 1,
+          "zones": {
+            "53": "vibes/v1_53.ogg",
+            "57": "vibes/v1_57.ogg",
+            "60": "vibes/v1_60.ogg",
+            "64": "vibes/v1_64.ogg",
+            "67": "vibes/v1_67.ogg",
+            "71": "vibes/v1_71.ogg",
+            "74": "vibes/v1_74.ogg",
+            "77": "vibes/v1_77.ogg",
+            "81": "vibes/v1_81.ogg",
+            "84": "vibes/v1_84.ogg",
+            "88": "vibes/v1_88.ogg"
+          }
+        }
+      ]
+    },
+    "guitar": {
+      "credit": {
+        "name": "Spanish classical guitar (FreePats)",
+        "author": "roberto@zenvoid.org, for the FreePats project",
+        "license": "CC0-1.0",
+        "url": "https://freepats.zenvoid.org/Guitar/acoustic-guitar.html"
+      },
+      "release": 0.8,
+      "layers": [
+        {
+          "maxVelocity": 1,
+          "zones": {
+            "31": "guitar/v0_31.ogg",
+            "32": "guitar/v0_32.ogg",
+            "33": "guitar/v0_33.ogg",
+            "34": "guitar/v0_34.ogg",
+            "35": "guitar/v0_35.ogg",
+            "36": "guitar/v0_36.ogg",
+            "37": "guitar/v0_37.ogg",
+            "38": "guitar/v0_38.ogg",
+            "39": "guitar/v0_39.ogg",
+            "40": "guitar/v0_40.ogg",
+            "41": "guitar/v0_41.ogg",
+            "43": "guitar/v0_43.ogg",
+            "45": "guitar/v0_45.ogg",
+            "47": "guitar/v0_47.ogg",
+            "48": "guitar/v0_48.ogg",
+            "50": "guitar/v0_50.ogg",
+            "52": "guitar/v0_52.ogg",
+            "53": "guitar/v0_53.ogg",
+            "54": "guitar/v0_54.ogg",
+            "55": "guitar/v0_55.ogg",
+            "56": "guitar/v0_56.ogg",
+            "57": "guitar/v0_57.ogg",
+            "58": "guitar/v0_58.ogg",
+            "59": "guitar/v0_59.ogg",
+            "60": "guitar/v0_60.ogg",
+            "61": "guitar/v0_61.ogg",
+            "62": "guitar/v0_62.ogg",
+            "63": "guitar/v0_63.ogg",
+            "64": "guitar/v0_64.ogg",
+            "65": "guitar/v0_65.ogg",
+            "66": "guitar/v0_66.ogg",
+            "67": "guitar/v0_67.ogg",
+            "69": "guitar/v0_69.ogg",
+            "70": "guitar/v0_70.ogg",
+            "71": "guitar/v0_71.ogg",
+            "72": "guitar/v0_72.ogg",
+            "73": "guitar/v0_73.ogg",
+            "74": "guitar/v0_74.ogg",
+            "75": "guitar/v0_75.ogg",
+            "76": "guitar/v0_76.ogg",
+            "77": "guitar/v0_77.ogg",
+            "78": "guitar/v0_78.ogg",
+            "79": "guitar/v0_79.ogg",
+            "80": "guitar/v0_80.ogg",
+            "81": "guitar/v0_81.ogg",
+            "82": "guitar/v0_82.ogg",
+            "83": "guitar/v0_83.ogg",
+            "84": "guitar/v0_84.ogg"
+          }
+        }
+      ]
+    },
+    "kalimba": {
+      "credit": {
+        "name": "Kalimba, Tanzania (VCSL)",
+        "author": "Versilian Studios",
+        "license": "CC0-1.0",
+        "url": "https://github.com/sgossner/VCSL"
+      },
+      "release": 1.2,
+      "layers": [
+        {
+          "maxVelocity": 1,
+          "zones": {
+            "44": "kalimba/v0_44.ogg",
+            "46": "kalimba/v0_46.ogg",
+            "49": "kalimba/v0_49.ogg",
+            "51": "kalimba/v0_51.ogg",
+            "53": "kalimba/v0_53.ogg",
+            "56": "kalimba/v0_56.ogg",
+            "59": "kalimba/v0_59.ogg",
+            "61": "kalimba/v0_61.ogg",
+            "64": "kalimba/v0_64.ogg",
+            "65": "kalimba/v0_65.ogg",
+            "67": "kalimba/v0_67.ogg",
+            "71": "kalimba/v0_71.ogg",
+            "73": "kalimba/v0_73.ogg",
+            "74": "kalimba/v0_74.ogg",
+            "75": "kalimba/v0_75.ogg",
+            "77": "kalimba/v0_77.ogg",
+            "78": "kalimba/v0_78.ogg",
+            "79": "kalimba/v0_79.ogg",
+            "82": "kalimba/v0_82.ogg",
+            "83": "kalimba/v0_83.ogg"
+          }
+        }
+      ]
     }
   },
   "drums": {

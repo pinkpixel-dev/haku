@@ -21,6 +21,9 @@ const credits = {
   glock: { name: 'Glockenspiel (VSCO 2 CE)', ...VSCO },
   marimba: { name: 'Marimba (VSCO 2 CE)', ...VSCO },
   harp: { name: 'Harp (VSCO 2 CE)', ...VSCO },
+  vibes: { name: 'Vibraphone, soft mallets (VCSL)', author: 'Versilian Studios', license: 'CC0-1.0', url: 'https://github.com/sgossner/VCSL' },
+  kalimba: { name: 'Kalimba, Tanzania (VCSL)', author: 'Versilian Studios', license: 'CC0-1.0', url: 'https://github.com/sgossner/VCSL' },
+  guitar: { name: 'Spanish classical guitar (FreePats)', author: 'roberto@zenvoid.org, for the FreePats project', license: 'CC0-1.0', url: 'https://freepats.zenvoid.org/Guitar/acoustic-guitar.html' },
   wurli: { name: 'Wurlitzer EP200', author: 'Greg Sullivan, sfz mapping by kinwie', license: 'CC-BY-3.0', url: 'https://github.com/sfzinstruments/GregSullivan.E-Pianos' },
   drums: { name: 'Big Rusty Drums', author: 'Karoryfer Samples', license: 'CC0-1.0', url: 'https://github.com/sfzinstruments/karoryfer.big-rusty-drums' },
   perc: { name: 'Shaker and cabasa (VCSL)', author: 'Versilian Studios', license: 'CC0-1.0', url: 'https://github.com/sgossner/VCSL' },
@@ -38,6 +41,14 @@ function ffmpeg(args) {
     proc.on('error', reject);
     proc.on('close', (code) => (code === 0 ? resolve(stderr) : reject(new Error(`ffmpeg failed (${code}):\n${stderr.slice(-800)}`))));
   });
+}
+
+async function sampleRate(file) {
+  const proc = spawn('ffprobe', ['-v', 'error', '-select_streams', 'a:0', '-show_entries', 'stream=sample_rate', '-of', 'csv=p=0', file]);
+  let text = '';
+  proc.stdout.on('data', (d) => (text += d));
+  await new Promise((resolve, reject) => proc.on('close', (c) => (c === 0 ? resolve() : reject(new Error(`ffprobe failed on ${file}`)))));
+  return Number(text.trim());
 }
 
 async function duration(file) {
@@ -75,7 +86,8 @@ function noteToMidi(name) {
 /** The trim, tune, length, and fade part of the filter chain. Gain is added after measuring. */
 async function chainFor(job) {
   const filters = ['silenceremove=start_periods=1:start_threshold=-60dB:start_silence=0.002'];
-  if (job.tuneCents) filters.push(`asetrate=${(44100 * 2 ** (job.tuneCents / 1200)).toFixed(2)}`, 'aresample=44100');
+  // asetrate retunes by relabeling the rate, so it has to start from the file's real rate (VCSL ships some 48 kHz files).
+  if (job.tuneCents) filters.push(`asetrate=${((await sampleRate(job.input)) * 2 ** (job.tuneCents / 1200)).toFixed(2)}`, 'aresample=44100');
   if (job.volumeDb) filters.push(`volume=${job.volumeDb}dB`);
   const len = Math.min(job.maxLen, await duration(job.input));
   const fade = Math.min(job.fade ?? 0.3, len / 3);
@@ -170,6 +182,58 @@ function namedJobs(dir, pattern, prefix, maxLen, transpose = 0) {
   };
 }
 
+/**
+ * VCSL vibraphone, soft mallets, two velocity layers. Like the VSCO glock and marimba, the files
+ * sound an octave above their names (checked by pitch detection), so they're transposed up 12.
+ * Some notes only have a second round robin, so take whichever one exists.
+ */
+async function vibesJobs() {
+  const dir = join(src, 'vcsl', 'Idiophones', 'Struck Idiophones', 'Vibraphone', 'Soft Mallets');
+  const pattern = /^Vibes_soft_([A-G]#?\d)_v([12])_rr(\d)_Main\.wav$/;
+  const seen = new Set();
+  const jobs = [];
+  for (const f of (await readdir(dir)).sort()) {
+    const m = pattern.exec(f);
+    if (!m) continue;
+    const midi = noteToMidi(m[1]) + 12;
+    const layer = Number(m[2]) - 1;
+    if (seen.has(`${layer}_${midi}`)) continue;
+    seen.add(`${layer}_${midi}`);
+    jobs.push({ input: join(dir, f), output: `vibes/v${layer}_${midi}.ogg`, layer, midi, maxLen: 4, fade: 0.8 });
+  }
+  return jobs;
+}
+
+/**
+ * VCSL kalimba (a Tanzanian mbira). It isn't tuned to equal temperament, so every tine was measured
+ * (FFT peak near its named note, an octave up like the vibes) and gets its own correction. Where two
+ * tines landed on the same note, the one needing less correction stays. Tines above B5 are left out:
+ * their fundamentals are too weak to measure reliably.
+ */
+const KALIMBA = [
+  // [file key, MIDI note it plays, measured cents off that note]
+  ['G#1_k11', 44, 7], ['B1_k13', 46, 42], ['C#2_k10', 49, -2], ['D#2_k14', 51, 34], ['F2_k9alt', 53, 43],
+  ['G2_k15', 56, -48], ['A#2_k8', 59, -38], ['C#3_k16', 61, -45], ['D#3_k7', 64, -45], ['F3_k17', 65, 40],
+  ['G3_k6', 67, 17], ['A#3_k18', 71, -48], ['C#4_k5', 73, 10], ['D4_k19', 74, -49], ['D#4_k20', 75, 15],
+  ['F4_k3', 77, 27], ['F4_k21', 78, -49], ['G4_k22', 79, 33], ['A#4_k2', 82, 37], ['B4_k23', 83, -43],
+];
+
+function kalimbaJobs() {
+  const dir = join(src, 'vcsl', 'Idiophones', 'Plucked Idiophones', 'Kalimba, Tanzania');
+  return KALIMBA.map(([key, midi, cents]) => ({
+    input: join(dir, `MBira3_pluck_Main_${key}_50_100_rr2.wav`),
+    output: `kalimba/v0_${midi}.ogg`,
+    layer: 0,
+    midi,
+    tuneCents: -cents,
+    maxLen: 2.5,
+    fade: 0.6,
+  }));
+}
+
+/** Guitar notes measured 10 cents or more off pitch in the recording. The rest are within a few cents. */
+const GUITAR_CENTS = { 45: 22, 48: 21, 55: -10, 58: 12, 60: 11, 61: 17, 71: 13, 74: 10 };
+
 const DRUMS = {
   kick: { dir: 'kick_24/kick/kick', prefix: 'k', layers: [6, 11], maxLen: 1.2 },
   snare: { dir: 'snare_14/center/top', prefix: 'sn_center', layers: [4, 8], maxLen: 1.0 },
@@ -261,6 +325,10 @@ const tonal = {
   glock: { jobs: await namedJobs('vsco2-ce/Percussion/Glock', /^glock_medium_([A-G]\d)\.wav$/, 'glock', 3.5, 12)(), release: 1.5, layers: [1] },
   marimba: { jobs: await namedJobs('vsco2-ce/Percussion/Marimba', /^Marimba_hit_Outrigger_([A-G]\d)_loud_01\.wav$/, 'marimba', 2.5, 12)(), release: 0.8, layers: [1] },
   harp: { jobs: await namedJobs('vsco2-ce/Strings/Harp', /^KSHarp_([A-G]\d)_\w+\.wav$/, 'harp', 4)(), release: 1.5, layers: [1] },
+  vibes: { jobs: await vibesJobs(), release: 1.5, layers: [0.6, 1] },
+  // FreePats file names match their pitch (checked by pitch detection), so no transpose.
+  guitar: { jobs: (await namedJobs('freepats-guitar/SpanishClassicalGuitar-SFZ+FLAC-20190618/samples', /^([A-G]#?\d)\.flac$/, 'guitar', 3)()).map((j) => ({ ...j, tuneCents: -(GUITAR_CENTS[j.midi] ?? 0) })), release: 0.8, layers: [1] },
+  kalimba: { jobs: kalimbaJobs(), release: 1.2, layers: [1] },
 };
 
 const manifest = { version: 1, instruments: {}, drums: { credit: credits.drums, percussionCredit: credits.perc, pieces: {} }, ambience: {} };

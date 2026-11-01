@@ -134,12 +134,14 @@ A few things to know:
 
 ## Credits
 
-Haku's code is Apache 2.0 (see `dist/LICENSE`). The bundled samples are edited versions of the originals: trimmed, shortened, faded, level-adjusted, and re-encoded to Ogg Vorbis. The Wurlitzer also has its sfz mapping's tuning and level fixes baked in, and the rain recordings are cut into seamless loops.
+Haku's code is Apache 2.0 (see `dist/LICENSE`). The bundled samples are edited versions of the originals: trimmed, shortened, faded, level-adjusted, and re-encoded to Ogg Vorbis. The Wurlitzer also has its sfz mapping's tuning and level fixes baked in, the kalimba and a few guitar notes are retuned to the nearest note, and the rain recordings are cut into seamless loops.
 
 | Sound | Source | Author | License |
 |---|---|---|---|
 | Upright piano | [VSCO 2 Community Edition](https://github.com/sgossner/VSCO-2-CE) | Simon Dalzell of Ivy Audio, distributed by Versilian Studios | CC0 1.0 |
 | Glockenspiel, marimba, harp | [VSCO 2 Community Edition](https://github.com/sgossner/VSCO-2-CE) | Versilian Studios | CC0 1.0 |
+| Vibraphone, kalimba | [Versilian Community Sample Library](https://github.com/sgossner/VCSL) | Versilian Studios | CC0 1.0 |
+| Nylon guitar | [Spanish classical guitar](https://freepats.zenvoid.org/Guitar/acoustic-guitar.html) from FreePats | roberto@zenvoid.org, for the FreePats project | CC0 1.0 |
 | Wurlitzer EP200 | [Greg Sullivan's E-Pianos](https://github.com/sfzinstruments/GregSullivan.E-Pianos) | [Greg Sullivan](http://www.sullivang.net/), sfz mapping by kinwie | [CC-BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | Drums | [Big Rusty Drums](https://github.com/sfzinstruments/karoryfer.big-rusty-drums) | Karoryfer Samples | CC0 1.0 |
 | Shaker, cabasa | [Versilian Community Sample Library](https://github.com/sgossner/VCSL) | Versilian Studios | CC0 1.0 |

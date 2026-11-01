@@ -5,8 +5,11 @@ export const INSTRUMENTS = {
   wurli: { label: 'Wurlitzer', range: [55, 81], kind: 'tonal', gm: 4 },
   'fm-ep': { label: 'FM keys', range: [55, 81], kind: 'tonal', gm: 5 },
   glock: { label: 'Glockenspiel', range: [72, 96], kind: 'tonal', gm: 9 },
+  vibes: { label: 'Vibraphone', range: [53, 86], kind: 'tonal', gm: 11 },
   marimba: { label: 'Marimba', range: [55, 84], kind: 'tonal', gm: 12 },
+  kalimba: { label: 'Kalimba', range: [60, 83], kind: 'tonal', gm: 108 },
   harp: { label: 'Harp', range: [48, 84], kind: 'tonal', gm: 46 },
+  guitar: { label: 'Nylon guitar', range: [45, 79], kind: 'tonal', gm: 24 },
   pad: { label: 'Warm pad', range: [55, 79], kind: 'tonal', gm: 89 },
   pluck: { label: 'Soft pluck', range: [60, 84], kind: 'tonal', gm: 24 },
   bass: { label: 'Round bass', range: [31, 55], kind: 'tonal', gm: 33 },
@@ -65,7 +68,7 @@ export type CompStyle = (typeof COMP_STYLES)[number];
 export const BASS_STYLES = ['roots', 'walking', 'dub'] as const;
 export type BassStyle = (typeof BASS_STYLES)[number];
 
-export const CHORD_INSTRUMENTS = ['piano', 'wurli', 'fm-ep', 'pad', 'harp'] as const satisfies readonly InstrumentId[];
+export const CHORD_INSTRUMENTS = ['piano', 'wurli', 'fm-ep', 'pad', 'harp', 'vibes', 'guitar'] as const satisfies readonly InstrumentId[];
 
 export const GROOVE_IDS = ['dusty', 'brushes', 'halftime', 'bossa', 'sparse', 'jazz-ride', 'lazy-kick'] as const;
 export type GrooveId = (typeof GROOVE_IDS)[number];

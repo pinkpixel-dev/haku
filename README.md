@@ -13,7 +13,7 @@ There's also a CLI and an MCP server, so AI agents can draw music with the same 
 - **Reads a few gestures.** Tap for a single note, a short vertical line strums the chord, a tight zigzag plays a trill, a quick flick adds a grace note.
 - **Plays a backing band.** Voice-led jazzy chords (7ths, 9ths, 13ths) with six comping styles, including rolled chords and rootless shells. Roots, walking, or dub bass. Seven drum grooves, from dusty boom bap and a jazzy ride to a kick that drags behind the beat.
 - **Comes with moods.** Rainy study, late-night train, sunny café, dusk walk, and snowy window. Each one sets the tempo, key, chords, band, and mix.
-- **Sounds like lofi.** Sampled upright piano, Wurlitzer, glock, marimba, and harp, synth keys, pads, plucks, and bass, and a real drum kit, all run through tape warmth, wobble, reverb, vinyl crackle, and rain.
+- **Sounds like lofi.** Sampled upright piano, Wurlitzer, glock, vibraphone, marimba, kalimba, harp, and nylon guitar, synth keys, pads, plucks, and bass, and a real drum kit, all run through tape warmth, wobble, reverb, vinyl crackle, and rain.
 - **Exports MIDI** with a track per layer, and renders WAV offline (the browser and Node use the same audio code, so they sound the same).
 - **Lets agents draw too.** The `haku` CLI and the MCP server have a tool for every command, plus snapshots, analysis, playback, and export. They work on project files, or live on the tab you have open.
 
@@ -48,7 +48,7 @@ pnpm typecheck
 The processed samples are already in `assets/samples/`. To rebuild them from the original recordings:
 
 ```bash
-pnpm samples:fetch   # downloads about 400 MB into assets/sources/
+pnpm samples:fetch   # downloads about 450 MB into assets/sources/ (needs 7z for the guitar)
 pnpm samples:build   # makes assets/samples/ again
 ```
 
@@ -97,7 +97,7 @@ The canvas is 0 to 1 on both axes. x spans the whole scene and y = 0 is the top 
 
 ## Credits
 
-The sounds come from VSCO 2 CE, VCSL (shaker and cabasa), Big Rusty Drums, Greg Sullivan's Wurlitzer EP200, and two rain recordings from Freesound. The Wurlitzer is CC-BY 3.0, and everything else is CC0. Snapshots use the Figtree font (SIL Open Font License). Full details are in `DOCS/CREDITS.md`.
+The sounds come from VSCO 2 CE, VCSL (vibraphone, kalimba, shaker, and cabasa), the FreePats Spanish classical guitar, Big Rusty Drums, Greg Sullivan's Wurlitzer EP200, and two rain recordings from Freesound. The Wurlitzer is CC-BY 3.0, and everything else is CC0. Snapshots use the Figtree font (SIL Open Font License). Full details are in `DOCS/CREDITS.md`.
 
 ## License
 

@@ -14,6 +14,11 @@
 - The bossa picked up a cabasa
 - New shaker and cabasa samples from the Versilian Community Sample Library (CC0), credited in the app
 
+### 🎻 Instruments
+- Three new sampled instruments for your layers: vibraphone (soft mallets), kalimba, and nylon guitar
+- The kalimba is a Tanzanian mbira that isn't tuned to equal temperament, so every tine was measured and retuned to the nearest note to sit in tune with the band
+- Vibraphone and kalimba come from the Versilian Community Sample Library, and the guitar from FreePats. All three are CC0 and credited in the app
+
 ### 🎹 Comping
 - Rolled: each chord rolls up slowly from the bottom, with a softer roll halfway through the bar
 - Shells: rootless voicings on the Charleston rhythm, leaving the root to the bass the way a jazz pianist would

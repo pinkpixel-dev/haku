@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { DRUM_PIECE_IDS, pickLayer, type SampleManifest } from '../src/index.ts';
+import { DRUM_PIECE_IDS, INSTRUMENTS, pickLayer, type InstrumentId, type SampleManifest } from '../src/index.ts';
 
 const dir = join(import.meta.dirname, '..', '..', '..', 'assets', 'samples');
 const manifestPath = join(dir, 'manifest.json');
@@ -17,6 +17,20 @@ describe.skipIf(!existsSync(manifestPath))('sample manifest', () => {
     ];
     expect(files.length).toBeGreaterThan(100);
     for (const f of files) expect(existsSync(join(dir, f)), f).toBe(true);
+  });
+
+  it("covers every sampled instrument's playable range without stretching a sample far", () => {
+    for (const [id, inst] of Object.entries(manifest.instruments)) {
+      const [lo, hi] = INSTRUMENTS[id as InstrumentId].range;
+      for (const [i, layer] of inst!.layers.entries()) {
+        const zones = Object.keys(layer.zones).map(Number);
+        for (let midi = lo; midi <= hi; midi++) {
+          const gap = Math.min(...zones.map((z) => Math.abs(z - midi)));
+          // The glock's lowest sample is G5, so its bottom notes stretch 7 semitones. Nothing should be worse.
+          expect(gap, `${id} layer ${i} at MIDI ${midi}`).toBeLessThanOrEqual(7);
+        }
+      }
+    }
   });
 
   it('has a sample for every drum the engine can play', () => {

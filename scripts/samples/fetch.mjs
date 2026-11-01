@@ -2,8 +2,10 @@
 // Downloads the raw sample sources Haku is built from into assets/sources/.
 // Only the folders we actually use are fetched, not whole repositories.
 // Files that already exist with the right size are skipped, so re-running is cheap.
+// A few sources only ship as archives; those are downloaded once and unpacked with 7z.
 
-import { mkdir, stat, writeFile } from 'node:fs/promises';
+import { spawnSync } from 'node:child_process';
+import { mkdir, rm, stat, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -41,12 +43,14 @@ const sources = [
     repo: 'sgossner/VCSL',
     branch: 'master',
     license: 'CC0-1.0',
-    // Short shaker strokes (up for soft, down for accents) and the cabasa, for the band's grooves.
+    // Shaker and cabasa for the band's grooves, plus the vibraphone (soft mallets) and kalimba.
     include: [
       'LICENSE',
       'Idiophones/Struck Idiophones/Shaker, Small/Mid_ShakerHighFaster_',
       'Idiophones/Struck Idiophones/Cabasa/Cabasa1_Hit_',
       'Idiophones/Struck Idiophones/Cabasa/Cabasa1_Rub_v1_',
+      'Idiophones/Struck Idiophones/Vibraphone/Soft Mallets/',
+      'Idiophones/Plucked Idiophones/Kalimba, Tanzania/',
     ],
   },
   {
@@ -100,6 +104,37 @@ async function pool(items, limit, worker) {
   await Promise.all(runners);
 }
 
+/** Sources that only come as one archive. Unpacked into assets/sources/<id>/, and skipped if that folder exists. */
+const archives = [
+  {
+    id: 'freepats-guitar',
+    url: 'https://freepats.zenvoid.org/Guitar/SpanishClassicalGuitar/SpanishClassicalGuitar-SFZ+FLAC-20190618.7z',
+    license: 'CC0-1.0',
+  },
+];
+
+async function fetchArchive({ id, url, license }) {
+  const dest = join(outDir, id);
+  try {
+    await stat(dest);
+    console.log(`${id.padEnd(16)} already unpacked  ${license}`);
+    return;
+  } catch {}
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`${url} -> ${res.status}`);
+  const data = Buffer.from(await res.arrayBuffer());
+  const file = join(outDir, `${id}.7z`);
+  await mkdir(outDir, { recursive: true });
+  await writeFile(file, data);
+  const unpack = spawnSync('7z', ['x', '-y', `-o${dest}`, file], { encoding: 'utf8' });
+  await rm(file);
+  if (unpack.error || unpack.status !== 0) {
+    await rm(dest, { recursive: true, force: true });
+    throw new Error(`Couldn't unpack ${id}. Is 7z installed (p7zip)? ${unpack.error?.message ?? unpack.stderr}`);
+  }
+  console.log(`${id.padEnd(16)} ${(data.length / 1e6).toFixed(1).padStart(6)} MB archive unpacked  ${license}`);
+}
+
 for (const source of sources) {
   const tree = await listTree(source);
   const files = tree.filter((entry) => source.include.some((p) => entry.path === p || entry.path.startsWith(p)));
@@ -116,3 +151,5 @@ for (const source of sources) {
       `(${fetched} downloaded, ${skipped} cached)  ${source.license}`,
   );
 }
+
+for (const archive of archives) await fetchArchive(archive);
