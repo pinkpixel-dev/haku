@@ -39,6 +39,8 @@ export const DRUM_TRIM_DB: Record<DrumPiece, number> = {
   openhat: -12,
   ride: -10,
   tom: -4,
+  shaker: -3,
+  cabasa: -10,
 };
 
 /** Gain after the bus compressor, before the master fader and the limiter. */

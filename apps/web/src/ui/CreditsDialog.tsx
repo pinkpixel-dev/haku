@@ -23,6 +23,7 @@ function soundCredits(manifest: SampleManifest): Credit[] {
   const all = [
     ...Object.values(manifest.instruments).map((i) => i!.credit),
     manifest.drums.credit,
+    manifest.drums.percussionCredit,
     ...Object.values(manifest.ambience).map((a) => a.credit),
   ];
   // Several instruments share a source (VSCO), so dedupe by name.

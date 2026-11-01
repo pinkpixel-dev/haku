@@ -33,7 +33,8 @@ export interface DrumLayer {
 export interface SampleManifest {
   version: 1;
   instruments: Partial<Record<InstrumentId, SampledInstrument>>;
-  drums: { credit: Credit; pieces: Partial<Record<DrumPiece, DrumLayer[]>> };
+  /** `credit` is the kit; `percussionCredit` covers the shaker and cabasa the grooves use. */
+  drums: { credit: Credit; percussionCredit: Credit; pieces: Partial<Record<DrumPiece, DrumLayer[]>> };
   ambience: Record<'rain_roof' | 'rain_window', { file: string; credit: Credit }>;
 }
 

@@ -37,6 +37,19 @@ const sources = [
     ],
   },
   {
+    id: 'vcsl',
+    repo: 'sgossner/VCSL',
+    branch: 'master',
+    license: 'CC0-1.0',
+    // Short shaker strokes (up for soft, down for accents) and the cabasa, for the band's grooves.
+    include: [
+      'LICENSE',
+      'Idiophones/Struck Idiophones/Shaker, Small/Mid_ShakerHighFaster_',
+      'Idiophones/Struck Idiophones/Cabasa/Cabasa1_Hit_',
+      'Idiophones/Struck Idiophones/Cabasa/Cabasa1_Rub_v1_',
+    ],
+  },
+  {
     id: 'wurlitzer-ep200',
     repo: 'sfzinstruments/GregSullivan.E-Pianos',
     branch: 'master',

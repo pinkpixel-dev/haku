@@ -7,7 +7,7 @@ import { mod12 } from '../theory/notes.ts';
 import { tonicPc, type Key } from '../theory/scales.ts';
 import { grooveBar } from './grooves.ts';
 import type { NoteEvent } from './types.ts';
-import { voiceChord } from './voicing.ts';
+import { voiceChord, VOICING_RANGE } from './voicing.ts';
 
 export interface PlacedChord {
   chord: ChordRef;
@@ -31,23 +31,52 @@ export function placeChords(progression: readonly ChordRef[], key: Key, totalBea
   return out;
 }
 
+interface CompHit {
+  at: number;
+  len: number;
+  /** Beats between one note of the chord and the next, low to high. */
+  strum: number;
+  /** Velocity of the lowest note. Defaults to 0.5. */
+  vel?: number;
+}
+
+/** Splits a chord into whole bars and hits each one the same way, clipped to the chord's length. */
+function perBar(beats: number, pattern: readonly CompHit[]): CompHit[] {
+  const hits: CompHit[] = [];
+  for (let bar = 0; bar < beats; bar += 4) {
+    for (const h of pattern) {
+      if (bar + h.at < beats) hits.push({ ...h, at: bar + h.at, len: Math.min(h.len, beats - bar - h.at) });
+    }
+  }
+  return hits;
+}
+
 /** Hit times (beat offset, length) for one chord, by comping style. */
-function compRhythm(style: CompStyle, beats: number): { at: number; len: number; strum: number }[] {
+function compRhythm(style: CompStyle, beats: number): CompHit[] {
   switch (style) {
     case 'sustain':
       return [{ at: 0, len: beats, strum: 0.01 }];
     case 'lazy':
       // Strummed a hair late and let ring, the classic lofi keys feel.
       return [{ at: 0.06, len: beats - 0.3, strum: 0.035 }];
-    case 'stabs': {
-      const hits: { at: number; len: number; strum: number }[] = [];
-      for (let bar = 0; bar < beats; bar += 4) {
-        for (const [at, len] of [[0, 0.9], [1.5, 0.4], [3, 0.4]] as const) {
-          if (bar + at < beats) hits.push({ at: bar + at, len: Math.min(len, beats - bar - at), strum: 0.01 });
-        }
-      }
-      return hits;
-    }
+    case 'stabs':
+      return perBar(beats, [
+        { at: 0, len: 0.9, strum: 0.01 },
+        { at: 1.5, len: 0.4, strum: 0.01 },
+        { at: 3, len: 0.4, strum: 0.01 },
+      ]);
+    case 'rolled':
+      // A slow roll up from the bottom, then a softer one halfway through the bar.
+      return perBar(beats, [
+        { at: 0, len: 2.4, strum: 0.08 },
+        { at: 2.5, len: 1.5, strum: 0.07, vel: 0.4 },
+      ]);
+    case 'shells':
+      // The Charleston: on 1, then the "and" of 2, short and tight like a pianist comping.
+      return perBar(beats, [
+        { at: 0, len: 1.2, strum: 0.012, vel: 0.52 },
+        { at: 1.5, len: 2.2, strum: 0.012, vel: 0.44 },
+      ]);
     case 'arp':
       return [];
   }
@@ -61,7 +90,7 @@ export function compChords(
   const out: NoteEvent[] = [];
   const base = { track: 'backing:chords', instrument: backing.instrument, source: 'chords' as const, brightness: 0.6 };
   for (const p of placed) {
-    const voicing = voiceChord(p.rootPc, p.chord.quality, carry.voicing);
+    const voicing = voiceChord(p.rootPc, p.chord.quality, carry.voicing, VOICING_RANGE, backing.style === 'shells');
     carry.voicing = voicing;
     if (backing.style === 'arp') {
       // Up and back down in eighths, letting each note ring a little.
@@ -74,7 +103,7 @@ export function compChords(
     for (const hit of compRhythm(backing.style, p.beats)) {
       voicing.forEach((midi, i) => {
         const at = hit.at + i * hit.strum;
-        out.push({ ...base, time: p.start + at, duration: Math.max(0.1, hit.len - i * hit.strum), midi, velocity: 0.5 - i * 0.03 });
+        out.push({ ...base, time: p.start + at, duration: Math.max(0.1, hit.len - i * hit.strum), midi, velocity: (hit.vel ?? 0.5) - i * 0.03 });
       });
     }
   }

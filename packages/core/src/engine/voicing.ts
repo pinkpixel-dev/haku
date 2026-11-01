@@ -18,8 +18,18 @@ function closeVoicing(order: readonly number[], bottom: number): number[] {
   return notes;
 }
 
-export function candidateVoicings(rootPc: number, quality: ChordQuality, range = VOICING_RANGE): number[][] {
-  const pcs = [...new Set(QUALITIES[quality].voicing.map((i) => mod12(rootPc + i)))];
+/**
+ * The intervals a comping voicing uses. Rootless leaves the root to the bass, the way jazz pianists
+ * comp, as long as at least three notes are left (plain triads keep their root).
+ */
+export function voicingIntervals(quality: ChordQuality, rootless = false): readonly number[] {
+  const all = QUALITIES[quality].voicing;
+  const without = all.filter((i) => mod12(i) !== 0);
+  return rootless && without.length >= 3 ? without : all;
+}
+
+export function candidateVoicings(rootPc: number, quality: ChordQuality, range = VOICING_RANGE, rootless = false): number[][] {
+  const pcs = [...new Set(voicingIntervals(quality, rootless).map((i) => mod12(rootPc + i)))];
   const out: number[][] = [];
   for (let r = 0; r < pcs.length; r++) {
     const order = [...pcs.slice(r), ...pcs.slice(0, r)];
@@ -53,8 +63,8 @@ function roughness(v: readonly number[]): number {
   return penalty;
 }
 
-export function voiceChord(rootPc: number, quality: ChordQuality, prev: readonly number[] | null, range = VOICING_RANGE): number[] {
-  const candidates = candidateVoicings(rootPc, quality, range);
+export function voiceChord(rootPc: number, quality: ChordQuality, prev: readonly number[] | null, range = VOICING_RANGE, rootless = false): number[] {
+  const candidates = candidateVoicings(rootPc, quality, range, rootless);
   let best = candidates[0] ?? [];
   let bestCost = Infinity;
   for (const v of candidates) {

@@ -1,7 +1,7 @@
 // The band (backing chords, bass, drums), the lofi mix, and the ambience (rain and the view out
 // the window). The cat sleeps on top.
 
-import { BASS_STYLES, CHORD_INSTRUMENTS, COMP_STYLES, GROOVE_IDS, INSTRUMENTS, RAIN_KINDS, WINDOW_SCENES, type Project, type Scene } from '@haku/core';
+import { BASS_STYLES, CHORD_INSTRUMENTS, COMP_STYLES, GROOVE_IDS, GROOVES, INSTRUMENTS, RAIN_KINDS, WINDOW_SCENES, type Project, type Scene } from '@haku/core';
 import type { Command } from '@haku/protocol';
 import { Select, Slider, Switch, titleCase } from './controls.tsx';
 import { Cat, Sprig } from './room/art.tsx';
@@ -49,7 +49,7 @@ export function SidePanel({ project, scene, run }: Props) {
 
           <div className="band-part">
             <Switch label="Drums" checked={b.drums.enabled} onChange={(enabled) => backing({ drums: { enabled } })} />
-            <Select label="Groove" value={b.drums.groove} options={opts(GROOVE_IDS)} onChange={(groove) => backing({ drums: { groove } })} />
+            <Select label="Groove" value={b.drums.groove} options={opts(GROOVE_IDS, (id) => GROOVES[id].label)} onChange={(groove) => backing({ drums: { groove } })} />
             <Slider label="Volume" value={b.drums.volume} onChange={(volume) => backing({ drums: { volume } })} />
           </div>
 

@@ -24,7 +24,7 @@ describe.skipIf(!existsSync(manifestPath))('sample manifest', () => {
   });
 
   it('credits every source, and flags the one that needs attribution', () => {
-    const credits = [...Object.values(manifest.instruments).map((i) => i!.credit), manifest.drums.credit, ...Object.values(manifest.ambience).map((a) => a.credit)];
+    const credits = [...Object.values(manifest.instruments).map((i) => i!.credit), manifest.drums.credit, manifest.drums.percussionCredit, ...Object.values(manifest.ambience).map((a) => a.credit)];
     for (const c of credits) expect(c.license).toMatch(/^CC/);
     expect(manifest.instruments.wurli!.credit.license).toBe('CC-BY-3.0');
   });

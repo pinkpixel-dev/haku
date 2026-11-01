@@ -23,6 +23,7 @@ const credits = {
   harp: { name: 'Harp (VSCO 2 CE)', ...VSCO },
   wurli: { name: 'Wurlitzer EP200', author: 'Greg Sullivan, sfz mapping by kinwie', license: 'CC-BY-3.0', url: 'https://github.com/sfzinstruments/GregSullivan.E-Pianos' },
   drums: { name: 'Big Rusty Drums', author: 'Karoryfer Samples', license: 'CC0-1.0', url: 'https://github.com/sfzinstruments/karoryfer.big-rusty-drums' },
+  perc: { name: 'Shaker and cabasa (VCSL)', author: 'Versilian Studios', license: 'CC0-1.0', url: 'https://github.com/sgossner/VCSL' },
   rain_roof: { name: 'Soft rain on roof window', author: 'Metadex', license: 'CC0-1.0', url: 'https://freesound.org/people/Metadex/sounds/235827/' },
   rain_window: { name: 'January rain on a window', author: 'mmorgaine', license: 'CC0-1.0', url: 'https://freesound.org/people/mmorgaine/sounds/333510/' },
 };
@@ -200,6 +201,30 @@ function drumJobs() {
   return jobs;
 }
 
+/**
+ * Hand percussion from VCSL for the band's grooves. Each piece is its own encode group, so adding
+ * them never changes the gain the drum kit was built with. Layers go soft to loud by measured peak:
+ * the shaker's down strokes are quieter than its up strokes, and the cabasa rub is far softer than a hit.
+ */
+const PERC = {
+  shaker: { dir: 'Idiophones/Struck Idiophones/Shaker, Small', layers: ['Mid_ShakerHighFaster_Down', 'Mid_ShakerHighFaster_Up'], name: (l, rr) => `${l}_rr${rr}.wav`, maxLen: 0.2 },
+  cabasa: { dir: 'Idiophones/Struck Idiophones/Cabasa', layers: ['Cabasa1_Rub_v1', 'Cabasa1_Hit'], name: (l, rr) => `${l}_rr${rr}_Mid.wav`, maxLen: 0.35 },
+};
+
+function percJobs(piece) {
+  const d = PERC[piece];
+  return d.layers.flatMap((prefix, layer) =>
+    [1, 2].map((rr) => ({
+      input: join(src, 'vcsl', d.dir, d.name(prefix, rr)),
+      output: `drums/${piece}_v${layer}_r${rr}.ogg`,
+      piece,
+      layer,
+      maxLen: d.maxLen,
+      fade: d.maxLen / 3,
+    })),
+  );
+}
+
 // ---------- rain ----------
 
 /** A seamless loop: take the section plus `xfade` seconds, then crossfade that tail into the head. */
@@ -238,7 +263,7 @@ const tonal = {
   harp: { jobs: await namedJobs('vsco2-ce/Strings/Harp', /^KSHarp_([A-G]\d)_\w+\.wav$/, 'harp', 4)(), release: 1.5, layers: [1] },
 };
 
-const manifest = { version: 1, instruments: {}, drums: { credit: credits.drums, pieces: {} }, ambience: {} };
+const manifest = { version: 1, instruments: {}, drums: { credit: credits.drums, percussionCredit: credits.perc, pieces: {} }, ambience: {} };
 
 for (const [id, inst] of Object.entries(tonal)) {
   await encodeGroup(id, inst.jobs);
@@ -258,6 +283,15 @@ for (const piece of Object.keys(DRUMS)) {
   manifest.drums.pieces[piece] = [0, 1].map((layer) => ({
     maxVelocity: layer === 0 ? 0.6 : 1,
     files: drums.filter((j) => j.piece === piece && j.layer === layer).map((j) => j.output),
+  }));
+}
+
+for (const piece of Object.keys(PERC)) {
+  const jobs = percJobs(piece);
+  await encodeGroup(piece, jobs);
+  manifest.drums.pieces[piece] = [0, 1].map((layer) => ({
+    maxVelocity: layer === 0 ? 0.6 : 1,
+    files: jobs.filter((j) => j.layer === layer).map((j) => j.output),
   }));
 }
 

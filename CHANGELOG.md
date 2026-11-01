@@ -8,6 +8,16 @@
 ### 🖼️ Snapshots
 - `snapshot` takes `scope: song` (`--scope song` in the CLI) for a picture of the whole arrangement: the song order across the top, then each scene's chords and notes on the same time scale. Scenes that aren't in the song get named in the reply
 
+### 🥁 Grooves
+- Two new grooves. Jazzy ride has a spang-a-lang ride, a feathered kick, and the hat on 2 and 4. Lazy kick is boom bap with the kick dragging behind the beat and a shaker instead of hats
+- Brushes, bossa, and sparse now have turnaround bars like the others, so loops breathe before they come around
+- The bossa picked up a cabasa
+- New shaker and cabasa samples from the Versilian Community Sample Library (CC0), credited in the app
+
+### 🎹 Comping
+- Rolled: each chord rolls up slowly from the bottom, with a softer roll halfway through the bar
+- Shells: rootless voicings on the Charleston rhythm, leaving the root to the bass the way a jazz pianist would
+
 ### ⚡ Loading
 - Tone.js and the audio engine now load in their own chunk after the page is up, so the main bundle dropped from about 730 kB to about 460 kB
 

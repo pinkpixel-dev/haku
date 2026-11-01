@@ -142,6 +142,7 @@ Haku's code is Apache 2.0 (see `dist/LICENSE`). The bundled samples are edited v
 | Glockenspiel, marimba, harp | [VSCO 2 Community Edition](https://github.com/sgossner/VSCO-2-CE) | Versilian Studios | CC0 1.0 |
 | Wurlitzer EP200 | [Greg Sullivan's E-Pianos](https://github.com/sfzinstruments/GregSullivan.E-Pianos) | [Greg Sullivan](http://www.sullivang.net/), sfz mapping by kinwie | [CC-BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | Drums | [Big Rusty Drums](https://github.com/sfzinstruments/karoryfer.big-rusty-drums) | Karoryfer Samples | CC0 1.0 |
+| Shaker, cabasa | [Versilian Community Sample Library](https://github.com/sgossner/VCSL) | Versilian Studios | CC0 1.0 |
 | Rain on the roof | [Soft rain on roof window](https://freesound.org/people/Metadex/sounds/235827/) | Metadex | CC0 1.0 |
 | Rain on the window | [January rain on a window](https://freesound.org/people/mmorgaine/sounds/333510/) | mmorgaine | CC0 1.0 |
 

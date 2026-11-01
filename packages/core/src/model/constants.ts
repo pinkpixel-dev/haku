@@ -41,6 +41,9 @@ export const DRUM_PIECES = {
   openhat: { label: 'Open hat', gm: 46 },
   ride: { label: 'Ride', gm: 51 },
   tom: { label: 'Tom', gm: 45 },
+  // The band's grooves use these two. Drawn drum layers stick to the rows in drumRows().
+  shaker: { label: 'Shaker', gm: 82 },
+  cabasa: { label: 'Cabasa', gm: 69 },
 } as const;
 
 export type DrumPiece = keyof typeof DRUM_PIECES;
@@ -56,7 +59,7 @@ export function drumRows(kit: DrumKit): DrumPiece[] {
     : ['kick', 'tom', 'snare', 'rim', 'hat', 'openhat', 'ride'];
 }
 
-export const COMP_STYLES = ['sustain', 'lazy', 'stabs', 'arp'] as const;
+export const COMP_STYLES = ['sustain', 'lazy', 'stabs', 'arp', 'rolled', 'shells'] as const;
 export type CompStyle = (typeof COMP_STYLES)[number];
 
 export const BASS_STYLES = ['roots', 'walking', 'dub'] as const;
@@ -64,7 +67,7 @@ export type BassStyle = (typeof BASS_STYLES)[number];
 
 export const CHORD_INSTRUMENTS = ['piano', 'wurli', 'fm-ep', 'pad', 'harp'] as const satisfies readonly InstrumentId[];
 
-export const GROOVE_IDS = ['dusty', 'brushes', 'halftime', 'bossa', 'sparse'] as const;
+export const GROOVE_IDS = ['dusty', 'brushes', 'halftime', 'bossa', 'sparse', 'jazz-ride', 'lazy-kick'] as const;
 export type GrooveId = (typeof GROOVE_IDS)[number];
 
 export const WINDOW_SCENES = ['rain', 'dusk', 'night-city', 'sunny', 'snow'] as const;

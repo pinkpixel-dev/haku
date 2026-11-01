@@ -198,6 +198,12 @@
       "license": "CC0-1.0",
       "url": "https://github.com/sfzinstruments/karoryfer.big-rusty-drums"
     },
+    "percussionCredit": {
+      "name": "Shaker and cabasa (VCSL)",
+      "author": "Versilian Studios",
+      "license": "CC0-1.0",
+      "url": "https://github.com/sgossner/VCSL"
+    },
     "pieces": {
       "kick": [
         {
@@ -340,6 +346,38 @@
           "files": [
             "drums/tom_v1_r1.ogg",
             "drums/tom_v1_r2.ogg"
+          ]
+        }
+      ],
+      "shaker": [
+        {
+          "maxVelocity": 0.6,
+          "files": [
+            "drums/shaker_v0_r1.ogg",
+            "drums/shaker_v0_r2.ogg"
+          ]
+        },
+        {
+          "maxVelocity": 1,
+          "files": [
+            "drums/shaker_v1_r1.ogg",
+            "drums/shaker_v1_r2.ogg"
+          ]
+        }
+      ],
+      "cabasa": [
+        {
+          "maxVelocity": 0.6,
+          "files": [
+            "drums/cabasa_v0_r1.ogg",
+            "drums/cabasa_v0_r2.ogg"
+          ]
+        },
+        {
+          "maxVelocity": 1,
+          "files": [
+            "drums/cabasa_v1_r1.ogg",
+            "drums/cabasa_v1_r2.ogg"
           ]
         }
       ]

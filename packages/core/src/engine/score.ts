@@ -7,6 +7,7 @@ import { chordPcs, chordSymbol } from '../theory/chords.ts';
 import { prefersFlats } from '../theory/scales.ts';
 import { hashSeed } from '../rng.ts';
 import { bassLine, compChords, drumPart, placeChords } from './backing.ts';
+import { applyGrooveLag } from './grooves.ts';
 import { applyHumanize, applySwing } from './humanize.ts';
 import { strokeToNotes } from './strokes.ts';
 import type { ChordEvent, NoteEvent, Score } from './types.ts';
@@ -60,6 +61,7 @@ export function sceneEvents(
   for (const e of kept) e.duration = Math.min(e.duration, totalBeats - e.time);
 
   applySwing(kept, project.swing);
+  if (backing && scene.backing.drums.enabled) applyGrooveLag(kept, scene.backing.drums.groove);
   applyHumanize(kept, project.humanize, hashSeed(project.seed, scene.id), pass);
   for (const e of kept) e.time += offset;
 
