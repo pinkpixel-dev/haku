@@ -32,7 +32,7 @@ A few more things worth knowing:
 
 - Your loop saves on its own in the browser, and it's still there when you come back. The folder button in the top bar lists your projects, starts new ones, and saves or imports `.haku.json` files.
 - Ctrl+Z undoes and Ctrl+Shift+Z (or Ctrl+Y) redoes.
-- Scenes live under the canvas. Add or duplicate one, then build the song in the strip next to them. Switch the top bar from Loop to Song to hear the whole thing.
+- Scenes live under the canvas. Add or duplicate one, then build the song in the strip next to them. Switch the top bar from Loop to Song to hear the whole thing. Turn on Follow if you want the canvas to switch to whichever scene is playing.
 - The download button exports WAV or MIDI, for the current scene or the whole song.
 - The mood button in the top bar shows a little window for each mood. The big window at the top of the room follows the mood, but you can pick a different view outside under Ambience in the Mix panel whenever you want.
 

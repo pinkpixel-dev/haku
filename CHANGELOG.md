@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+### 🎵 Playback
+- New Follow toggle next to Loop and Song. During Song playback the canvas switches to whichever scene is playing. Pick a different scene yourself and Follow turns off, so you don't get pulled back mid-edit. It's remembered between visits
+
+### 🖼️ Snapshots
+- `snapshot` takes `scope: song` (`--scope song` in the CLI) for a picture of the whole arrangement: the song order across the top, then each scene's chords and notes on the same time scale. Scenes that aren't in the song get named in the reply
+
+### ⚡ Loading
+- Tone.js and the audio engine now load in their own chunk after the page is up, so the main bundle dropped from about 730 kB to about 460 kB
+
 ## 0.3.0 - October 31, 2026
 
 ### 🌐 haku web

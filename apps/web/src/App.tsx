@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { BRUSH_IDS, type BrushId, type StrokePoint } from '@haku/core';
 import { engine, type PlayMode } from './audio/engine.ts';
 import { agentLink } from './bridge/link.ts';
@@ -47,6 +47,37 @@ function usePlayingScene(playing: boolean) {
   return sceneId;
 }
 
+const FOLLOW_KEY = 'haku:follow';
+
+/**
+ * Follow mode: during Song playback, select whichever scene is playing. Picking a different scene
+ * yourself (a tab, an agent, undo) turns it off, so the view never yanks you back mid-edit.
+ */
+function useFollow(playingSceneId: string | null, sceneId: string, select: (id: string) => void) {
+  const [follow, setFollowState] = useState(() => localStorage.getItem(FOLLOW_KEY) === 'on');
+  const setFollow = useCallback((on: boolean) => {
+    localStorage.setItem(FOLLOW_KEY, on ? 'on' : 'off');
+    setFollowState(on);
+  }, []);
+  // The playing scene we last jumped to. A new value means a section change (or follow just came on).
+  const followed = useRef<string | null>(null);
+  useEffect(() => {
+    if (!follow || !playingSceneId) {
+      followed.current = null;
+      return;
+    }
+    if (sceneId === playingSceneId) {
+      followed.current = playingSceneId;
+    } else if (followed.current !== playingSceneId) {
+      followed.current = playingSceneId;
+      select(playingSceneId);
+    } else {
+      setFollow(false);
+    }
+  }, [follow, playingSceneId, sceneId, select, setFollow]);
+  return [follow, setFollow] as const;
+}
+
 export function App() {
   const api = useProject();
   if (!api) return <div className="app-loading">Opening your last loop…</div>;
@@ -76,6 +107,8 @@ function Studio({ api }: { api: ProjectApi }) {
   const mode = useSyncExternalStore(subscribe, () => engine.mode);
   const playingSceneId = usePlayingScene(playing && mode === 'song');
   const linkState = useAgentLink(api);
+  const selectScene = useCallback((id: string) => run({ type: 'select_scene', scene: id }), [run]);
+  const [follow, setFollow] = useFollow(playingSceneId, scene.id, selectScene);
 
   useEffect(() => void engine.load(), []);
   useEffect(() => engine.update(project), [project]);
@@ -158,6 +191,8 @@ function Studio({ api }: { api: ProjectApi }) {
         canRedo={api.canRedo}
         onToggle={toggle}
         onMode={setMode}
+        follow={follow}
+        onFollow={setFollow}
         onUndo={undo}
         onRedo={redo}
         onProjects={() => setDialog('projects')}

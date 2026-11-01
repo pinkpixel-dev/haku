@@ -5,10 +5,15 @@
 // Tone.Offline (used for WAV export) swaps Tone's global context while it sets up a render, so this
 // file holds on to the live context and transport instead of asking Tone for them each time, and
 // it holds off rescheduling until an export is done.
+//
+// Tone.js and @haku/audio are most of the bundle, so they're loaded with a dynamic import in load()
+// instead of up front. Only types come in statically here.
 
-import * as Tone from 'tone';
+import type * as ToneNS from 'tone';
 import { beatsToSeconds, buildArrangementScore, buildSceneScore, type Project, type SampleManifest, type Score } from '@haku/core';
-import { browserDecoder, loadSampleBank, renderProject, Rig, type PcmAudio, type RenderOptions, type SampleBank } from '@haku/audio';
+import type { PcmAudio, RenderOptions, Rig, SampleBank } from '@haku/audio';
+
+type AudioModule = typeof import('@haku/audio');
 
 export type EngineStatus = { state: 'idle' } | { state: 'loading'; loaded: number; total: number } | { state: 'ready' } | { state: 'error'; message: string };
 export type PlayMode = 'loop' | 'song';
@@ -22,9 +27,11 @@ export interface Position {
 type Listener = () => void;
 
 class LiveEngine {
+  private tone: typeof ToneNS | null = null;
+  private audio: AudioModule | null = null;
   private rig: Rig | null = null;
   private bank: SampleBank | null = null;
-  private context: Tone.BaseContext | null = null;
+  private context: ToneNS.BaseContext | null = null;
   private loading: Promise<void> | null = null;
   private project: Project | null = null;
   private score: Score | null = null;
@@ -58,14 +65,17 @@ class LiveEngine {
   load(): Promise<void> {
     this.loading ??= (async () => {
       try {
-        this.context = Tone.getContext();
+        const [tone, audio] = await Promise.all([import('tone'), import('@haku/audio')]);
+        this.tone = tone;
+        this.audio = audio;
+        this.context = tone.getContext();
         const base = import.meta.env.BASE_URL;
         const res = await fetch(`${base}manifest.json`);
         if (!res.ok) throw new Error(`Couldn't load the sample manifest (${res.status})`);
         this.manifest = (await res.json()) as SampleManifest;
         this.setStatus({ state: 'loading', loaded: 0, total: 1 });
-        this.bank = await loadSampleBank(this.manifest, browserDecoder(base), (loaded, total) => this.setStatus({ state: 'loading', loaded, total }));
-        this.rig = new Rig(this.bank);
+        this.bank = await audio.loadSampleBank(this.manifest, audio.browserDecoder(base), (loaded, total) => this.setStatus({ state: 'loading', loaded, total }));
+        this.rig = new audio.Rig(this.bank);
         await this.rig.ready;
         this.setStatus({ state: 'ready' });
         if (this.project) this.update(this.project);
@@ -108,8 +118,10 @@ class LiveEngine {
   }
 
   async play() {
-    await Tone.start();
+    // Normally already loaded by the time anyone presses play. If not, the click's user activation
+    // is still fresh enough after the load for start() to resume the context.
     await this.load();
+    await this.tone?.start();
     if (!this.rig || this.playing || this.exporting) return;
     this.transport.start('+0.05', 0);
     this.rig.master.startAmbience(this.context!.now(), Math.random() * 20);
@@ -141,12 +153,12 @@ class LiveEngine {
   /** Renders offline with the same Rig setup. Playback stops while it runs. */
   async render(project: Project, opts: RenderOptions): Promise<PcmAudio> {
     await this.load();
-    if (!this.bank) throw new Error("Sounds aren't loaded yet");
+    if (!this.bank || !this.audio) throw new Error("Sounds aren't loaded yet");
     this.stop();
     this.exporting = true;
     this.emit();
     try {
-      return await renderProject(project, this.bank, opts);
+      return await this.audio.renderProject(project, this.bank, opts);
     } finally {
       this.exporting = false;
       this.scheduledKey = '';

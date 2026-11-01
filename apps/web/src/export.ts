@@ -1,7 +1,8 @@
 // Getting things out of Haku and back in: WAV, MIDI, and the project file itself.
 
 import { buildArrangementScore, buildSceneScore, findScene, makeId, parseProject, scoreToMidi, type Project } from '@haku/core';
-import { encodeWav } from '@haku/audio';
+// The wav subpath, not the barrel: the barrel pulls Tone.js into the main bundle.
+import { encodeWav } from '@haku/audio/wav';
 import { engine } from './audio/engine.ts';
 
 export type ExportScope = 'scene' | 'song';

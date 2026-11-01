@@ -1,6 +1,8 @@
-// A picture of one scene, for agents that can see images: the chord strip, beat grid, every layer's
-// notes and the strokes that made them, laid out the same way as the web canvas (x is time across
-// the scene, y is pitch across each layer's range). Built as SVG, then rasterized with resvg.
+// Pictures for agents that can see images. A scene snapshot shows the chord strip, beat grid, every
+// layer's notes and the strokes that made them, laid out the same way as the web canvas (x is time
+// across the scene, y is pitch across each layer's range). A song snapshot shows the arrangement
+// order on top, then a compact panel of notes for each scene in it. Built as SVG, then rasterized
+// with resvg.
 
 import {
   buildSceneScore,
@@ -14,6 +16,8 @@ import {
   prefersFlats,
   type Layer,
   type Project,
+  type Scene,
+  type Score,
 } from '@haku/core';
 import { fontFiles } from './paths.ts';
 
@@ -77,24 +81,8 @@ export function snapshotSvg(project: Project, opts: SnapshotOptions = {}): strin
   const info = `Scene ${scene.name} · ${scene.bars} bars · ${keyLabel(project.key)} · ${project.bpm} BPM`;
   out.push(`<text x="${x1}" y="29" font-size="13" fill="${C.muted}" text-anchor="end">${esc(info)}</text>`);
 
-  // Chord strip.
-  out.push(`<rect x="${x0}" y="${header}" width="${cw}" height="${strip}" fill="${C.sunken}" rx="4"/>`);
-  for (const [i, chord] of score.chords.entries()) {
-    const cx = bx(chord.time);
-    const w = bx(chord.time + chord.duration) - cx;
-    if (i % 2 === 1) out.push(`<rect x="${n(cx)}" y="${header}" width="${n(w)}" height="${strip}" fill="${C.raised}" opacity="0.5"/>`);
-    out.push(`<text x="${n(cx + 9)}" y="${header + 20}" font-size="12.5" font-weight="600" fill="${C.muted}">${esc(chord.symbol)}</text>`);
-  }
-
-  // Canvas and grid.
-  out.push(`<rect x="${x0}" y="${top}" width="${cw}" height="${ch}" fill="${C.sunken}" opacity="0.55"/>`);
-  for (let b = 0; b <= beats; b++) {
-    const gx = n(bx(b));
-    const bar = b % 4 === 0;
-    out.push(`<line x1="${gx}" y1="${bar ? header : top}" x2="${gx}" y2="${bottom}" stroke="${bar ? C.strong : C.border}" opacity="${bar ? 0.9 : 0.45}"/>`);
-    // Bar numbers sit at the bottom right of each bar, clear of the pitch labels on the left.
-    if (bar && b > 0) out.push(`<text x="${n(gx - 6)}" y="${bottom - 6}" font-size="10" fill="${C.faint}" text-anchor="end">${b / 4}</text>`);
-  }
+  chordStrip(out, score, bx, x0, cw, header, strip);
+  grid(out, beats, bx, x0, cw, header, top, bottom);
 
   // Pitch guides for the focus layer: drum rows, or a line per C.
   if (focus && INSTRUMENTS[focus.instrument].kind === 'drums') {
@@ -117,28 +105,7 @@ export function snapshotSvg(project: Project, opts: SnapshotOptions = {}): strin
   const layers = [...scene.layers].sort((a, b) => Number(a.id === focus?.id) - Number(b.id === focus?.id));
   for (const layer of layers) {
     const front = layer.id === focus?.id;
-    const drums = INSTRUMENTS[layer.instrument].kind === 'drums';
-    const range = layerRange(layer);
-    const rows = drumRows(layer.kit);
-    out.push(`<g fill="${layer.color}" opacity="${front ? 0.75 : 0.32}">`);
-    for (const e of score.events) {
-      if (e.track !== layer.id) continue;
-      let ny: number;
-      let nh: number;
-      if (drums) {
-        const i = Math.max(0, rows.indexOf(e.drum as (typeof rows)[number]));
-        ny = 1 - (i + 1) / rows.length;
-        nh = 1 / rows.length;
-      } else {
-        nh = 1 / (range[1] - range[0]);
-        ny = pitchToY(e.midi, range) - nh / 2;
-      }
-      const rx = bx(e.time);
-      const rw = Math.max(3, bx(e.time + e.duration) - rx - 1.5);
-      const rh = Math.max(4, nh * ch - 1.5);
-      out.push(`<rect x="${n(rx)}" y="${n(top + ny * ch)}" width="${n(rw)}" height="${n(rh)}" rx="${n(Math.min(3, rh / 2))}"/>`);
-    }
-    out.push('</g>');
+    notes(out, layer, score, bx, top, ch, front ? 0.75 : 0.32);
     for (const s of layer.strokes) {
       const width = n(2 + s.size * 10);
       const opacity = front ? 0.85 : 0.2;
@@ -168,6 +135,141 @@ export function snapshotSvg(project: Project, opts: SnapshotOptions = {}): strin
 
   out.push('</svg>');
   return out.join('\n');
+}
+
+export interface SongSnapshot {
+  svg: string;
+  /** Scenes drawn, in the order they first play. */
+  scenes: Scene[];
+  /** Scenes that exist but aren't in the arrangement, so they're left out. */
+  unused: Scene[];
+}
+
+/** The whole arrangement: song order on top, then one panel per scene, all on the same time scale. */
+export function songSnapshotSvg(project: Project, opts: { width?: number } = {}): SongSnapshot {
+  const W = opts.width ?? 1200;
+  const pad = 20;
+  const header = 46;
+  const order = 34;
+  const label = 26;
+  const strip = 24;
+  const canvas = 120;
+  const gap = 16;
+  const x0 = pad;
+  const x1 = W - pad;
+  const cw = x1 - x0;
+
+  const items = project.arrangement.flatMap((item) => {
+    const scene = project.scenes.find((s) => s.id === item.sceneId);
+    return scene ? [{ scene, repeat: item.repeat }] : [];
+  });
+  const scenes = [...new Map(items.map((i) => [i.scene.id, i.scene])).values()];
+  const unused = project.scenes.filter((s) => !scenes.includes(s));
+  const plays = (s: Scene) => items.filter((i) => i.scene.id === s.id).reduce((sum, i) => sum + i.repeat, 0);
+  const totalBars = items.reduce((sum, i) => sum + i.scene.bars * i.repeat, 0);
+  // Every panel uses the longest scene's scale, so a 4-bar scene is half as wide as an 8-bar one.
+  const maxBeats = Math.max(4, ...scenes.map((s) => s.bars * 4));
+  const bx = (b: number) => x0 + (b / maxBeats) * cw;
+
+  const panelTop = header + order + gap + 6;
+  const panel = label + strip + canvas + gap;
+  const H = panelTop + scenes.length * panel + pad - gap;
+
+  const out: string[] = [];
+  out.push(`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" font-family="${FONT}">`);
+  out.push(`<rect width="${W}" height="${H}" fill="${C.bg}"/>`);
+
+  out.push(`<text x="${x0}" y="29" font-size="17" font-weight="600" fill="${C.text}">${esc(project.name)}</text>`);
+  const count = `${scenes.length} ${scenes.length === 1 ? 'scene' : 'scenes'}`;
+  const info = `Song · ${count} · ${totalBars} bars · ${keyLabel(project.key)} · ${project.bpm} BPM`;
+  out.push(`<text x="${x1}" y="29" font-size="13" fill="${C.muted}" text-anchor="end">${esc(info)}</text>`);
+
+  // Song order: one block per arrangement entry, as wide as it plays.
+  let ox = x0;
+  for (const [i, item] of items.entries()) {
+    const w = (item.scene.bars * item.repeat * cw) / Math.max(1, totalBars);
+    out.push(`<rect x="${n(ox)}" y="${header}" width="${n(Math.max(1, w - 2))}" height="${order}" rx="4" fill="${i % 2 ? C.raised : C.sunken}" stroke="${C.border}"/>`);
+    const text = item.repeat > 1 ? `${item.scene.name} ×${item.repeat}` : item.scene.name;
+    // Skip labels that wouldn't fit; the panels below still name every scene.
+    if (w > text.length * 7.5 + 14) out.push(`<text x="${n(ox + 9)}" y="${header + 22}" font-size="12.5" font-weight="600" fill="${C.text}">${esc(text)}</text>`);
+    ox += w;
+  }
+
+  for (const [i, scene] of scenes.entries()) {
+    const y = panelTop + i * panel;
+    const score = buildSceneScore(project, scene.id);
+    const beats = scene.bars * 4;
+    const sx1 = bx(beats);
+    const top = y + label + strip;
+    const bottom = top + canvas;
+    const times = plays(scene);
+    // Drawn layers only; the backing band's events are in the score too.
+    const ids = new Set(scene.layers.map((l) => l.id));
+    const noteTotal = score.events.filter((e) => ids.has(e.track)).length;
+    const head = `Scene ${scene.name} · ${scene.bars} ${scene.bars === 1 ? 'bar' : 'bars'} · plays ${times}×`;
+    const tail = `${scene.layers.length} ${scene.layers.length === 1 ? 'layer' : 'layers'} · ${noteTotal} notes`;
+    out.push(`<text x="${x0}" y="${y + 17}" font-size="13" font-weight="600" fill="${C.text}">${esc(head)}</text>`);
+    out.push(`<text x="${x1}" y="${y + 17}" font-size="12" fill="${C.muted}" text-anchor="end">${esc(tail)}</text>`);
+    chordStrip(out, score, bx, x0, sx1 - x0, y + label, strip);
+    grid(out, beats, bx, x0, sx1 - x0, y + label, top, bottom);
+    for (const layer of scene.layers) notes(out, layer, score, bx, top, canvas, layer.muted ? 0.25 : 0.7);
+    if (!scene.layers.length) out.push(`<text x="${x0 + 10}" y="${top + 22}" font-size="12" fill="${C.faint}">No layers yet</text>`);
+  }
+
+  out.push('</svg>');
+  return { svg: out.join('\n'), scenes, unused };
+}
+
+// ---------- shared pieces ----------
+
+type Scale = (beat: number) => number;
+
+function chordStrip(out: string[], score: Score, bx: Scale, x0: number, width: number, y: number, h: number) {
+  out.push(`<rect x="${x0}" y="${y}" width="${n(width)}" height="${h}" fill="${C.sunken}" rx="4"/>`);
+  for (const [i, chord] of score.chords.entries()) {
+    const cx = bx(chord.time);
+    const w = bx(chord.time + chord.duration) - cx;
+    if (i % 2 === 1) out.push(`<rect x="${n(cx)}" y="${y}" width="${n(w)}" height="${h}" fill="${C.raised}" opacity="0.5"/>`);
+    out.push(`<text x="${n(cx + 9)}" y="${n(y + h / 2 + 5)}" font-size="12.5" font-weight="600" fill="${C.muted}">${esc(chord.symbol)}</text>`);
+  }
+}
+
+/** The canvas background and beat lines. Bar lines run up through the chord strip from stripTop. */
+function grid(out: string[], beats: number, bx: Scale, x0: number, width: number, stripTop: number, top: number, bottom: number) {
+  out.push(`<rect x="${x0}" y="${top}" width="${n(width)}" height="${bottom - top}" fill="${C.sunken}" opacity="0.55"/>`);
+  for (let b = 0; b <= beats; b++) {
+    const gx = n(bx(b));
+    const bar = b % 4 === 0;
+    out.push(`<line x1="${gx}" y1="${bar ? stripTop : top}" x2="${gx}" y2="${bottom}" stroke="${bar ? C.strong : C.border}" opacity="${bar ? 0.9 : 0.45}"/>`);
+    // Bar numbers sit at the bottom right of each bar, clear of the pitch labels on the left.
+    if (bar && b > 0) out.push(`<text x="${n(gx - 6)}" y="${bottom - 6}" font-size="10" fill="${C.faint}" text-anchor="end">${b / 4}</text>`);
+  }
+}
+
+/** One layer's notes as pills: drums on their rows, tonal parts by pitch across the layer's range. */
+function notes(out: string[], layer: Layer, score: Score, bx: Scale, top: number, ch: number, opacity: number) {
+  const drums = INSTRUMENTS[layer.instrument].kind === 'drums';
+  const range = layerRange(layer);
+  const rows = drumRows(layer.kit);
+  out.push(`<g fill="${layer.color}" opacity="${opacity}">`);
+  for (const e of score.events) {
+    if (e.track !== layer.id) continue;
+    let ny: number;
+    let nh: number;
+    if (drums) {
+      const i = Math.max(0, rows.indexOf(e.drum as (typeof rows)[number]));
+      ny = 1 - (i + 1) / rows.length;
+      nh = 1 / rows.length;
+    } else {
+      nh = 1 / (range[1] - range[0]);
+      ny = pitchToY(e.midi, range) - nh / 2;
+    }
+    const rx = bx(e.time);
+    const rw = Math.max(3, bx(e.time + e.duration) - rx - 1.5);
+    const rh = Math.max(4, nh * ch - 1.5);
+    out.push(`<rect x="${n(rx)}" y="${n(top + ny * ch)}" width="${n(rw)}" height="${n(rh)}" rx="${n(Math.min(3, rh / 2))}"/>`);
+  }
+  out.push('</g>');
 }
 
 /** PNG bytes. resvg is a native module, so it's only loaded when a PNG is actually asked for. */

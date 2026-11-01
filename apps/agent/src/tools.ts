@@ -14,7 +14,7 @@ import { loadAudio } from './audio.ts';
 import { NO_TAB, type Link } from './bridge.ts';
 import { launchTab } from './launch.ts';
 import type { Player } from './player.ts';
-import { snapshotPng, snapshotSvg } from './snapshot.ts';
+import { snapshotPng, snapshotSvg, songSnapshotSvg } from './snapshot.ts';
 import { FileTarget, LiveTarget, readProjectFile, writeProjectFile, type Target } from './target.ts';
 
 export interface ToolResult {
@@ -229,20 +229,31 @@ const stop = define({
 const snapshot = define({
   name: 'snapshot',
   title: 'Snapshot',
-  description: 'A picture of a scene: chords along the top, each layer\'s notes and strokes, and a legend. Returns a PNG. Pass out to also save it (.png or .svg).',
+  description:
+    "A picture of a scene: chords along the top, each layer's notes and strokes, and a legend. With scope song, the whole arrangement instead: the song order on top, then the chords and notes of each scene in it. Returns a PNG. Pass out to also save it (.png or .svg).",
   readOnly: true,
   input: z.object({
     file,
+    scope,
     scene: sceneArg,
-    layer: z.string().optional().describe('Layer to bring to the front, with its pitch guides'),
+    layer: z.string().optional().describe('Layer to bring to the front, with its pitch guides. Scene scope only.'),
     width: z.number().int().min(400).max(2400).optional().describe('Image width in pixels. Default 1200.'),
     out: z.string().optional().describe('Also save the picture here (.png or .svg)'),
   }),
-  async run({ file: path, scene, layer, width = 1200, out }, ctx) {
+  async run({ file: path, scope = 'scene', scene, layer, width = 1200, out }, ctx) {
     const project = await (await targetFor(ctx, path)).read();
-    const s = sceneOf(project, scene);
-    const svg = snapshotSvg(project, { scene: s.id, layer, width, height: Math.round(width * 0.53) });
-    const notes: string[] = [`Snapshot of scene ${s.name} in "${project.name}"`];
+    let svg: string;
+    const notes: string[] = [];
+    if (scope === 'song') {
+      const shot = songSnapshotSvg(project, { width });
+      svg = shot.svg;
+      notes.push(`Snapshot of the song in "${project.name}" (${shot.scenes.map((s) => s.name).join(', ')})`);
+      if (shot.unused.length) notes.push(`not in the song: ${shot.unused.map((s) => s.name).join(', ')}`);
+    } else {
+      const s = sceneOf(project, scene);
+      svg = snapshotSvg(project, { scene: s.id, layer, width, height: Math.round(width * 0.53) });
+      notes.push(`Snapshot of scene ${s.name} in "${project.name}"`);
+    }
     if (out?.toLowerCase().endsWith('.svg')) {
       const full = resolve(ctx.cwd, out);
       await writeFile(full, svg);

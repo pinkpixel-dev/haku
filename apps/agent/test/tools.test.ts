@@ -61,6 +61,20 @@ describe('tools on a project file', () => {
     expect(r.image!.data.subarray(1, 4).toString()).toBe('PNG');
   });
 
+  it('takes a snapshot of the whole song, one panel per scene in it', async () => {
+    await call('add_scene', { file: 'song.haku.json', name: 'Bridge', bars: 2, select: false });
+    await call('add_scene', { file: 'song.haku.json', name: 'Spare', select: false });
+    const scenes = (await project()).scenes.map((s) => s.name);
+    await call('arrange', { file: 'song.haku.json', items: [{ scene: scenes[0], repeat: 2 }, { scene: 'Bridge' }, { scene: scenes[0] }] });
+
+    const r = await call('snapshot', { file: 'song.haku.json', scope: 'song', width: 800, out: 'song.svg' });
+    expect(r.text).toContain(`(${scenes[0]}, Bridge)`);
+    expect(r.text).toContain('not in the song: Spare');
+    expect(r.image!.data.subarray(1, 4).toString()).toBe('PNG');
+    const svg = await readFile(join(dir, 'song.svg'), 'utf8');
+    expect(svg.match(/Scene [^<]+ · plays \d+×/g)).toEqual([`Scene ${scenes[0]} · 4 bars · plays 3×`, 'Scene Bridge · 2 bars · plays 1×']);
+  });
+
   it('analyzes chord fit without rendering', async () => {
     const r = await call('analyze', { file: 'song.haku.json', audio: false });
     expect(r.text).toMatch(/"Melody" \(\w+\): \d+ notes/);

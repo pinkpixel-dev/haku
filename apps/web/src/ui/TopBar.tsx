@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Download, FolderOpen, Info, Loader2, Play, Redo2, Repeat, Square, Undo2 } from 'lucide-react';
+import { Download, FolderOpen, Info, Loader2, LocateFixed, Play, Redo2, Repeat, Square, Undo2 } from 'lucide-react';
 import { MODES, PROGRESSION_PRESETS, PROGRESSIONS, resolveProgression, type Project, type Scene } from '@haku/core';
 import type { Command } from '@haku/protocol';
 import type { EngineStatus, PlayMode } from '../audio/engine.ts';
@@ -23,6 +23,9 @@ interface Props {
   canRedo: boolean;
   onToggle: () => void;
   onMode: (m: PlayMode) => void;
+  /** Song playback moves the canvas to the scene that's playing. */
+  follow: boolean;
+  onFollow: (on: boolean) => void;
   onUndo: () => void;
   onRedo: () => void;
   onProjects: () => void;
@@ -66,6 +69,17 @@ export function TopBar(p: Props) {
           </button>
           <button type="button" aria-label="Song" aria-pressed={p.mode === 'song'} data-tip="Play the whole arrangement" onClick={() => p.onMode('song')}>
             Song
+          </button>
+        </div>
+        <div className="segmented segmented--text" role="group" aria-label="Follow">
+          <button
+            type="button"
+            aria-pressed={p.follow}
+            disabled={p.mode !== 'song'}
+            data-tip={p.mode === 'song' ? 'Show the scene that’s playing' : 'Follow works in Song mode'}
+            onClick={() => p.onFollow(!p.follow)}
+          >
+            <LocateFixed size={13} /> Follow
           </button>
         </div>
         <label className="bpm">

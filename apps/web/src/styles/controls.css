@@ -329,6 +329,13 @@ input[type='range']:focus-visible::-moz-range-thumb {
   color: var(--text);
 }
 
+.segmented--text button:disabled {
+  color: var(--text-faint);
+  background: transparent;
+  border-color: transparent;
+  cursor: default;
+}
+
 /* Tips on the far right open leftward. */
 .tip-left[data-tip]::after {
   left: auto;

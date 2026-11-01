@@ -93,7 +93,7 @@ Every drawing and editing command is its own tool (`draw_line`, `set_mood`, `add
 | `new_project` | Makes a new `.haku.json` from a mood |
 | `batch` | Runs a list of commands as one step. All or nothing |
 | `describe` | Reads the project back as text, with a little piano roll per layer |
-| `snapshot` | A PNG of a scene: chords, notes, strokes, and a legend. `--out` saves it as `.png` or `.svg` |
+| `snapshot` | A PNG of a scene: chords, notes, strokes, and a legend. `--scope song` draws the whole arrangement instead: the song order, then each scene's chords and notes. `--out` saves it as `.png` or `.svg` |
 | `analyze` | Notes per layer, how many strong-beat notes are chord tones, notes outside the key, half-step clashes between layers, and loudness in LUFS |
 | `play` / `stop` | Renders the scene (or the whole song) and plays it through your speakers |
 | `export` | WAV, MIDI, or the project file, for one scene or the whole song |
