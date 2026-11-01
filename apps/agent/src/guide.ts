@@ -20,7 +20,7 @@ The canvas:
 
 A good loop:
 1. describe to see what's there. set_mood picks a whole vibe in one go: ${MOOD_IDS.join(', ')}.
-2. add_layer for each part (piano, wurli, fm-ep, glock, vibes, marimba, kalimba, harp, guitar, pad, pluck, bass, drums).
+2. add_layer for each part (piano, wurli, fm-ep, glock, vibes, marimba, kalimba, harp, guitar, pad, pluck, celesta, musicbox, bass, drums).
 3. Draw with draw_shape, draw_curve, or draw_line. Use batch to send many commands as one step.
 4. Check your work: describe (text piano roll), snapshot (a picture), analyze (chord fit, clashes, loudness).
 5. play to listen, export for WAV, MIDI, or the project file.

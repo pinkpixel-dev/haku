@@ -12,6 +12,8 @@ export const INSTRUMENTS = {
   guitar: { label: 'Nylon guitar', range: [45, 79], kind: 'tonal', gm: 24 },
   pad: { label: 'Warm pad', range: [55, 79], kind: 'tonal', gm: 89 },
   pluck: { label: 'Soft pluck', range: [60, 84], kind: 'tonal', gm: 24 },
+  celesta: { label: 'Celesta', range: [60, 96], kind: 'tonal', gm: 8 },
+  musicbox: { label: 'Music box', range: [64, 96], kind: 'tonal', gm: 10 },
   bass: { label: 'Round bass', range: [31, 55], kind: 'tonal', gm: 33 },
   drums: { label: 'Drums', range: [0, 0], kind: 'drums', gm: 0 },
 } as const satisfies Record<string, { label: string; range: readonly [number, number]; kind: 'tonal' | 'drums'; gm: number }>;

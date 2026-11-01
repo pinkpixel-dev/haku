@@ -17,6 +17,7 @@
 ### 🎻 Instruments
 - Three new sampled instruments for your layers: vibraphone (soft mallets), kalimba, and nylon guitar
 - The band can comp on vibraphone or nylon guitar too, picked from Chords > Sound
+- Two synth instruments, celesta and music box. They're FM voices, so they add nothing to the download
 - The kalimba is a Tanzanian mbira that isn't tuned to equal temperament, so every tine was measured and retuned to the nearest note to sit in tune with the band
 - Vibraphone and kalimba come from the Versilian Community Sample Library, and the guitar from FreePats. All three are CC0 and credited in the app
 

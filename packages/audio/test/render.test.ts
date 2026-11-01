@@ -4,7 +4,7 @@ import { nodeDecoder, readManifest, setupNodeAudio } from '../src/node.ts';
 
 // Tone must only be imported after the Node audio globals exist.
 setupNodeAudio();
-const { createProject, beatsToSeconds } = await import('@haku/core');
+const { createProject, beatsToSeconds, INSTRUMENT_IDS, INSTRUMENTS } = await import('@haku/core');
 const { execute } = await import('@haku/protocol');
 const audio = await import('../src/index.ts');
 
@@ -32,6 +32,22 @@ describe('offline render', () => {
     expect(peakDb).toBeLessThan(0);
     expect(rmsDb).toBeGreaterThan(-35);
   }, 60_000);
+
+  it('gives every tonal instrument a voice that actually sounds', async () => {
+    for (const instrument of INSTRUMENT_IDS) {
+      const def = INSTRUMENTS[instrument];
+      if (def.kind !== 'tonal') continue;
+      let p = createProject({ mood: 'sunny-cafe', seed: 1, bars: 1 });
+      p = execute(p, { type: 'set_backing', chords: { enabled: false }, bass: { enabled: false }, drums: { enabled: false } }).project;
+      p = execute(p, { type: 'mix', crackle: 0, rain: { enabled: false } }).project;
+      p = execute(p, { type: 'add_layer', instrument, name: 'Test' }).project;
+      const midi = Math.round((def.range[0] + def.range[1]) / 2);
+      p = execute(p, { type: 'draw_melody', layer: 'Test', notes: [{ pitch: midi, beat: 0, beats: 2, velocity: 0.7 }] }).project;
+      const { peakDb } = audio.measure(await audio.renderProject(p, bank, { tail: 0.5 }));
+      expect(peakDb, instrument).toBeGreaterThan(-40);
+      expect(peakDb, instrument).toBeLessThan(0);
+    }
+  }, 120_000);
 
   it('is silent with every part muted and no ambience', async () => {
     let p = createProject({ mood: 'sunny-cafe', seed: 1, bars: 1 });

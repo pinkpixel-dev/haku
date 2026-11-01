@@ -84,6 +84,32 @@ function synthVoice(instrument: InstrumentId): Voice {
       });
       filter.Q.value = 0.5;
       break;
+    case 'celesta':
+      // A struck bar over a resonator: mostly fundamental. 1:1 FM keeps every partial harmonic, and
+      // the modulator fades fast: the octave starts about 15 dB under the fundamental and fades to
+      // about 35 dB under, so the note starts bell-bright and settles to a soft near-sine.
+      synth = new Tone.PolySynth(Tone.FMSynth, {
+        harmonicity: 1,
+        modulationIndex: 16.0,
+        oscillator: { type: 'sine' },
+        modulation: { type: 'sine' },
+        envelope: { attack: 0.002, decay: 2.2, sustain: 0, release: 1.2 },
+        modulationEnvelope: { attack: 0.001, decay: 0.35, sustain: 0.01, release: 0.5 },
+      });
+      break;
+    case 'musicbox':
+      // A comb tine is a bar clamped at one end, whose next mode sits about 6.27x the fundamental.
+      // That ratio puts inharmonic sidebands about 20 dB under a clear note, and they die away within
+      // half a second, so the shimmer is all in the pluck. Index values were set by measuring partials.
+      synth = new Tone.PolySynth(Tone.FMSynth, {
+        harmonicity: 6.27,
+        modulationIndex: 24.0,
+        oscillator: { type: 'sine' },
+        modulation: { type: 'sine' },
+        envelope: { attack: 0.001, decay: 1.5, sustain: 0, release: 0.7 },
+        modulationEnvelope: { attack: 0.001, decay: 0.5, sustain: 0, release: 0.4 },
+      });
+      break;
     case 'pluck':
       synth = new Tone.PolySynth(Tone.Synth, {
         oscillator: { type: 'triangle' },

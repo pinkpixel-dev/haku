@@ -16,6 +16,8 @@ export const INSTRUMENT_TRIM_DB: Record<InstrumentId, number> = {
   guitar: -9,
   pad: -11,
   pluck: -6,
+  celesta: -4.5,
+  musicbox: -3,
   bass: -19,
   drums: 0,
 };

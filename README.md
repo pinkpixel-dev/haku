@@ -13,7 +13,7 @@ There's also a CLI and an MCP server, so AI agents can draw music with the same 
 - **Reads a few gestures.** Tap for a single note, a short vertical line strums the chord, a tight zigzag plays a trill, a quick flick adds a grace note.
 - **Plays a backing band.** Voice-led jazzy chords (7ths, 9ths, 13ths) with six comping styles, including rolled chords and rootless shells. Roots, walking, or dub bass. Seven drum grooves, from dusty boom bap and a jazzy ride to a kick that drags behind the beat.
 - **Comes with moods.** Rainy study, late-night train, sunny café, dusk walk, and snowy window. Each one sets the tempo, key, chords, band, and mix.
-- **Sounds like lofi.** Sampled upright piano, Wurlitzer, glock, vibraphone, marimba, kalimba, harp, and nylon guitar, synth keys, pads, plucks, and bass, and a real drum kit, all run through tape warmth, wobble, reverb, vinyl crackle, and rain.
+- **Sounds like lofi.** Sampled upright piano, Wurlitzer, glock, vibraphone, marimba, kalimba, harp, and nylon guitar, synth keys, pads, plucks, celesta, music box, and bass, and a real drum kit, all run through tape warmth, wobble, reverb, vinyl crackle, and rain.
 - **Exports MIDI** with a track per layer, and renders WAV offline (the browser and Node use the same audio code, so they sound the same).
 - **Lets agents draw too.** The `haku` CLI and the MCP server have a tool for every command, plus snapshots, analysis, playback, and export. They work on project files, or live on the tab you have open.
 
