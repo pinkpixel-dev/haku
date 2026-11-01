@@ -90,17 +90,14 @@
 }
 
 /* Tips near the right edge open leftward so they stay on screen. */
-.layer__row [data-tip]::after,
-.add-layer [data-tip]::after {
+.layer__row [data-tip]::after {
   left: auto;
   right: 0;
   transform: translate(0, -2px);
 }
 
 .layer__row [data-tip]:hover::after,
-.layer__row [data-tip]:focus-visible::after,
-.add-layer [data-tip]:hover::after,
-.add-layer [data-tip]:focus-visible::after {
+.layer__row [data-tip]:focus-visible::after {
   transform: translate(0, 0);
 }
 

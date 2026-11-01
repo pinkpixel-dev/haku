@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.1 - October 31, 2026
+
+### 🎛️ Layers
+- Adding a layer is now a full-width "Add layer" button that opens an instrument picker, instead of a small + next to a dropdown
+- The Layers panel is wider and roomier, with more space between layers and their settings
+
+### 🏷️ Versioning
+- Bumped to 0.2.1
+
 ## 0.2.0 - October 31, 2026
 
 ### 🏡 Cozy room
