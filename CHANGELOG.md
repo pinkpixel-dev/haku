@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.3.0 - October 31, 2026
+
+### 🌐 haku web
+- New `haku web` command that serves the Haku app on http://127.0.0.1:5177 and opens it in your browser. The npm package now includes the web app, so you don't need to clone the repo to draw
+- When an agent or CLI command needs the Haku tab and none is open, Haku starts `haku web` in the background and opens the browser for you. The background server quits after 30 minutes with no tab connected. Set `HAKU_NO_LAUNCH=1` to get the old "No Haku tab is connected" error instead
+- `HAKU_WEB_PORT` changes the port. Projects are saved per address, so a different port starts with an empty project list
+
+### 📦 Installable app
+- Haku can be installed as an app from Chrome or Edge. It gets its own window and icon
+- The app and all samples are cached after the first visit, so the installed app opens even when `haku web` isn't running
+
+### 🏷️ Versioning
+- Bumped to 0.3.0, and `@pinkpixel/haku` to 0.2.0
+
 ## 0.2.1 - October 31, 2026
 
 ### 🎛️ Layers

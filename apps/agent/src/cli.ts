@@ -1,17 +1,20 @@
 #!/usr/bin/env node
 // The haku command. Every tool from tools.ts becomes a subcommand with options generated from its
 // schema (draw_line becomes `haku draw-line --from '{"x":0,"y":0.5}' ...`), plus `exec` for a file
-// of commands, `bridge` to run the relay on its own, and `mcp` to start the MCP server.
+// of commands, `web` to open the app in a browser, `bridge` to run the relay on its own, and `mcp`
+// to start the MCP server.
 
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { Command, Option } from 'commander';
 import { z } from 'zod';
-import { BridgeClient, BridgeHost, bridgePort, type Link } from './bridge.ts';
+import type { PingReply } from '@haku/protocol';
+import { BridgeClient, BridgeHost, bridgePort, SharedLink, type Link } from './bridge.ts';
 import { GUIDE } from './guide.ts';
 import { Player } from './player.ts';
 import { TOOLS, type Context, type Tool } from './tools.ts';
 import { VERSION } from './version.ts';
+import { openBrowser, serveWeb, webPort, webRunning, webUrl } from './web.ts';
 
 type JsonSchema = {
   type?: string | string[];
@@ -27,11 +30,13 @@ const kebab = (s: string) => s.replace(/_/g, '-');
 
 let client: Promise<Link | null> | null = null;
 const ctx: Context = {
-  link: () => (client ??= BridgeClient.connect()),
+  // Tries again after a miss, since auto-launch may have just started a bridge.
+  link: async () => (await client) ?? (await (client = BridgeClient.connect())),
   player: new Player(),
   waitForPlayback: true,
   // Package-manager scripts (`pnpm haku`) run from the package root; INIT_CWD is where you typed it.
   cwd: process.env.INIT_CWD ?? process.cwd(),
+  autoLaunch: !process.env.HAKU_NO_LAUNCH,
 };
 
 function fail(message: string): never {
@@ -155,6 +160,50 @@ program
       fail(`${issue.path.join('.')}: ${issue.message}`);
     }
     await runTool(batch, parsed.data);
+  });
+
+/** How long an auto-launched `haku web` keeps running with no tab connected. */
+const IDLE_MS = 30 * 60_000;
+
+program
+  .command('web')
+  .description('Open Haku in your browser. Serves the app on localhost and hosts the bridge, so agents can drive it too.')
+  .option('--no-open', "Just serve, don't open a browser")
+  .addOption(new Option('--exit-when-idle').hideHelp())
+  .action(async (opts: { open: boolean; exitWhenIdle?: boolean }) => {
+    const port = webPort();
+    const url = webUrl(port);
+    let server: Awaited<ReturnType<typeof serveWeb>>;
+    try {
+      server = await serveWeb(port);
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code !== 'EADDRINUSE') fail(err instanceof Error ? err.message : String(err));
+      if (!(await webRunning(port))) fail(`port ${port} is taken by something else. Set HAKU_WEB_PORT to use another one.`);
+      console.log(`Haku is already running at ${url}`);
+      if (opts.open) await openBrowser(url);
+      return;
+    }
+
+    const link = new SharedLink();
+    await link.ensure().catch(() => null);
+    console.log(`Haku is running at ${url}. Ctrl+C to stop.`);
+    if (opts.open && !(await openBrowser(url))) console.log(`Couldn't open a browser. Open ${url} yourself.`);
+
+    const shutdown = () => {
+      server.close();
+      void link.close().finally(() => process.exit(0));
+    };
+    process.once('SIGINT', shutdown);
+    process.once('SIGTERM', shutdown);
+
+    if (opts.exitWhenIdle) {
+      let lastTab = Date.now();
+      setInterval(async () => {
+        const ping = (await link.request({ op: 'ping' }).catch(() => null)) as PingReply | null;
+        if (ping?.tab) lastTab = Date.now();
+        else if (Date.now() - lastTab > IDLE_MS) shutdown();
+      }, 60_000);
+    }
   });
 
 program

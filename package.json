@@ -1,6 +1,6 @@
 {
   "name": "haku",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Draw on a canvas, get cozy lofi music. With a CLI and MCP server so AI agents can draw too.",
   "license": "Apache-2.0",
   "author": "Pink Pixel <admin@pinkpixel.dev> (https://pinkpixel.dev)",

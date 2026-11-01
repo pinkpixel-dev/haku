@@ -12,6 +12,7 @@ import { COMMAND_HELP, CommandSchema, READ_ONLY_COMMANDS, type CommandType, type
 import { analyzeScenes, formatAnalysis } from './analyze.ts';
 import { loadAudio } from './audio.ts';
 import { NO_TAB, type Link } from './bridge.ts';
+import { launchTab } from './launch.ts';
 import type { Player } from './player.ts';
 import { snapshotPng, snapshotSvg } from './snapshot.ts';
 import { FileTarget, LiveTarget, readProjectFile, writeProjectFile, type Target } from './target.ts';
@@ -29,6 +30,8 @@ export interface Context {
   /** The CLI waits for offline playback to finish. The MCP server returns right away. */
   waitForPlayback: boolean;
   cwd: string;
+  /** Start `haku web` and open the browser when a tool needs the tab and none is connected. */
+  autoLaunch: boolean;
 }
 
 export interface Tool<S extends z.ZodObject = z.ZodObject> {
@@ -61,13 +64,18 @@ async function connectedTab(ctx: Context): Promise<Link | null> {
   return ping.tab ? link : null;
 }
 
+/** The connected tab, opening Haku first when none is connected (unless auto-launch is off). */
+async function requireTab(ctx: Context): Promise<Link> {
+  const tab = await connectedTab(ctx);
+  if (tab) return tab;
+  if (!ctx.autoLaunch) throw new Error(NO_TAB);
+  return launchTab(ctx.link);
+}
+
 /** The file when one is given, otherwise the live tab. */
 async function targetFor(ctx: Context, path: string | undefined): Promise<Target> {
   if (path) return new FileTarget(resolve(ctx.cwd, path));
-  const link = await ctx.link();
-  if (!link) throw new Error('No project file given, and the Haku bridge isn\'t running. Pass a file, or start "haku bridge" (or the MCP server) and open Haku.');
-  if (!(await connectedTab(ctx))) throw new Error(NO_TAB);
-  return new LiveTarget(link);
+  return new LiveTarget(await requireTab(ctx));
 }
 
 /** The scene a tool works on, resolved to an id so file and live targets agree. */
@@ -131,8 +139,7 @@ const newProject = define({
       await writeProjectFile(full, project);
       return { text: `Created "${project.name}" (${project.mood}) at ${full}` };
     }
-    const tab = await connectedTab(ctx);
-    if (!tab) throw new Error(NO_TAB);
+    const tab = await requireTab(ctx);
     await tab.request({ op: 'open_project', project });
     return { text: `Opened a new project "${project.name}" (${project.mood}) in the Haku tab` };
   },
@@ -146,8 +153,7 @@ const openProject = define({
   async run({ file: path }, ctx) {
     const full = resolve(ctx.cwd, path);
     const project = await readProjectFile(full);
-    const tab = await connectedTab(ctx);
-    if (!tab) throw new Error(NO_TAB);
+    const tab = await requireTab(ctx);
     await tab.request({ op: 'open_project', project });
     return { text: `Opened "${project.name}" from ${full} in the Haku tab` };
   },
@@ -172,7 +178,7 @@ const saveProject = define({
 const play = define({
   name: 'play',
   title: 'Play',
-  description: 'Listen. With the Haku tab connected (and no file), it plays there. Otherwise it renders offline and plays through this machine\'s speakers.',
+  description: 'Listen. With no file it plays in the Haku tab, opening one if needed. With a file it renders offline and plays through this machine\'s speakers.',
   input: z.object({
     file,
     scope,
@@ -181,13 +187,11 @@ const play = define({
   }),
   async run({ file: path, scope = 'scene', scene, loops = 2 }, ctx) {
     if (!path) {
-      const tab = await connectedTab(ctx);
-      if (tab) {
-        const status = (await tab.request({ op: 'play', mode: scope === 'song' ? 'song' : 'loop', scene })) as TabStatus;
-        return { text: `Playing ${scope === 'song' ? 'the song' : `scene ${status.sceneName} on a loop`} in the Haku tab` };
-      }
+      const tab = await requireTab(ctx);
+      const status = (await tab.request({ op: 'play', mode: scope === 'song' ? 'song' : 'loop', scene })) as TabStatus;
+      return { text: `Playing ${scope === 'song' ? 'the song' : `scene ${status.sceneName} on a loop`} in the Haku tab` };
     }
-    const project = await (await targetFor(ctx, path)).read();
+    const project = await new FileTarget(resolve(ctx.cwd, path)).read();
     const sceneId = sceneOf(project, scene).id;
     const audio = await loadAudio();
     const pcm = await audio.render(project, scope === 'song' ? { scope: 'song' } : { scope: 'scene', sceneId, loops, tail: 2 });
@@ -323,7 +327,7 @@ const status = define({
   async run(_, ctx) {
     const lines: string[] = [];
     const link = await ctx.link();
-    if (!link) lines.push('Bridge: not running. Start "haku bridge" or the MCP server, then open Haku.');
+    if (!link) lines.push('Bridge: not running. Run "haku web" to open Haku with the bridge.');
     else {
       const ping = (await link.request({ op: 'ping' })) as PingReply;
       if (!ping.tab) lines.push('Bridge: running, no Haku tab connected.');

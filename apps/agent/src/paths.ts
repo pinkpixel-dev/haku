@@ -19,3 +19,12 @@ export function fontFiles(): string[] {
   const dir = dirs.find((d) => existsSync(join(d, 'Figtree-Regular.ttf')));
   return dir ? ['Figtree-Regular.ttf', 'Figtree-SemiBold.ttf'].map((f) => join(dir, f)) : [];
 }
+
+/** The built web app. A published build carries it in dist/web; in the repo it's apps/web/dist (run `pnpm --filter @haku/web build`). */
+export function webDir(): string {
+  if (process.env.HAKU_WEB_DIR) return resolve(process.env.HAKU_WEB_DIR);
+  const candidates = [new URL('./web', import.meta.url), new URL('../../web/dist', import.meta.url)].map((u) => fileURLToPath(u));
+  const found = candidates.find((dir) => existsSync(join(dir, 'index.html')));
+  if (!found) throw new Error("Can't find the built Haku app. In the repo, run `pnpm --filter @haku/web build` first.");
+  return found;
+}

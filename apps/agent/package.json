@@ -1,6 +1,6 @@
 {
   "name": "@pinkpixel/haku",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Draw lofi music from the terminal or an AI agent. The Haku CLI and MCP server.",
   "keywords": [
     "lofi",
@@ -38,8 +38,8 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsdown",
-    "prepublishOnly": "tsdown",
+    "build": "pnpm --filter @haku/web build && tsdown",
+    "prepublishOnly": "pnpm run build",
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {

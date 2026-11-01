@@ -11,7 +11,7 @@ The `haku` command gives you (or your agent) a tool for every drawing command, p
 - Node 22.18 or newer
 - For listening without the browser: one of `pw-play`, `paplay`, `aplay`, `afplay`, or `ffplay` (Windows uses PowerShell, so nothing extra there)
 
-The package is about 7 MB, mostly because the instrument samples come with it.
+The package is about 9 MB, mostly because the instrument samples come with it. The web app is in there too.
 
 ## Install
 
@@ -102,21 +102,23 @@ Every drawing and editing command is its own tool (`draw_line`, `set_mood`, `add
 
 ## Working live in the browser
 
-Haku also has a web app with the actual drawing canvas. When it's open, leave out `-f` and the tools work on that tab instead of a file, so you see and hear every change, and Ctrl+Z still undoes it. The MCP server hosts a small bridge on `127.0.0.1:5179` for this, and the tab connects on its own. Without an MCP server, run `haku bridge` in another terminal.
-
-Right now the web app isn't hosted anywhere, so live mode means running it from the repo:
+Haku also has a web app with the actual drawing canvas, and it ships in this package. Open it with:
 
 ```bash
-git clone https://github.com/pinkpixel-dev/haku.git
-cd haku
-pnpm install
-pnpm --filter @haku/web dev
+haku web
 ```
 
-Then open http://localhost:5178. A few things to know:
+That serves the app on http://127.0.0.1:5177, hosts the agent bridge, and opens your default browser. Leave out `-f` and the tools work on that tab instead of a file, so you see and hear every change, and Ctrl+Z still undoes it. The MCP server also hosts the bridge on `127.0.0.1:5179`, and the tab connects to whichever one is running on its own.
+
+You don't have to open it first. When a tool needs the tab and none is connected, Haku starts `haku web` in the background (it quits after 30 minutes with no tab connected), opens the browser, and waits for the tab. Set `HAKU_NO_LAUNCH=1` if you'd rather get an error instead.
+
+In Chrome or Edge you can install Haku as an app from the install icon in the address bar. It gets its own window, and since the app and samples are cached after the first visit, it opens fine even when `haku web` isn't running. Agents only reach it while a bridge is up, though, so start `haku web` or your MCP client first if you want that.
+
+A few things to know:
 
 - Browsers won't let a page make sound until you've clicked in it once. If `play` says so, click anywhere in the tab and try again.
 - With more than one Haku tab open, tools drive the one you clicked into most recently.
+- Your projects are saved in the browser for `127.0.0.1:5177`. Changing `HAKU_WEB_PORT` gives you a separate, empty project list, so use the folder button to export and import if you move.
 - The bridge only accepts tabs from `localhost` pages and only accepts tools from outside the browser. `HAKU_ALLOW_ORIGINS` (comma separated) adds other page origins, and `HAKU_BRIDGE_PORT` changes the port.
 
 ## Environment variables
@@ -125,6 +127,8 @@ Then open http://localhost:5178. A few things to know:
 |---|---|
 | `HAKU_PROJECT` | Default project file for commands that take `-f` |
 | `HAKU_BRIDGE_PORT` | Bridge port. Default `5179` |
+| `HAKU_WEB_PORT` | Port `haku web` serves the app on. Default `5177` |
+| `HAKU_NO_LAUNCH` | Set it to stop tools from opening Haku when no tab is connected |
 | `HAKU_ALLOW_ORIGINS` | Extra page origins allowed to connect as a Haku tab |
 | `HAKU_SAMPLES` | Use a different sample folder (one with a `manifest.json`) |
 

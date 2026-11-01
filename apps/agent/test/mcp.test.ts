@@ -29,7 +29,7 @@ const callTool = async (name: string, args: object) => (await rpc('tools/call', 
 beforeAll(async () => {
   dir = await mkdtemp(join(tmpdir(), 'haku-mcp-'));
   // A port of its own, so a bridge you happen to be running doesn't get involved.
-  child = spawn(process.execPath, [cli, 'mcp'], { cwd: dir, env: { ...process.env, HAKU_BRIDGE_PORT: String(20000 + Math.floor(Math.random() * 20000)) } });
+  child = spawn(process.execPath, [cli, 'mcp'], { cwd: dir, env: { ...process.env, HAKU_NO_LAUNCH: '1', HAKU_BRIDGE_PORT: String(20000 + Math.floor(Math.random() * 20000)) } });
   createInterface({ input: child.stdout }).on('line', (line) => {
     try {
       const msg = JSON.parse(line) as Record<string, unknown>;

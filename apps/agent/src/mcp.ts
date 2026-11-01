@@ -28,6 +28,7 @@ export async function startMcp() {
     player,
     waitForPlayback: false,
     cwd: process.cwd(),
+    autoLaunch: !process.env.HAKU_NO_LAUNCH,
   };
 
   const handle = serveStdio(() => {

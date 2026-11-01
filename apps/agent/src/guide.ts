@@ -9,7 +9,7 @@ const presets = Object.entries(PROGRESSIONS)
 export const GUIDE = `Haku turns strokes on a canvas into lofi music. A backing band (chords, bass, drums) plays along, and drawn notes snap to the chords.
 
 Where the work happens:
-- With no file argument, tools act on the project open in the Haku browser tab, live. Changes show up there and land in its undo history.
+- With no file argument, tools act on the project open in the Haku browser tab, live. Changes show up there and land in its undo history. If no tab is open, Haku starts its local app server and opens one in the browser.
 - With file set to a .haku.json path, tools read and write that file instead. new_project makes one.
 
 The canvas:

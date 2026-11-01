@@ -14,7 +14,7 @@ const project = async () => parseProject(JSON.parse(await readFile(join(dir, 'so
 
 beforeAll(async () => {
   dir = await mkdtemp(join(tmpdir(), 'haku-tools-'));
-  ctx = { link: async () => null, player: new Player(), waitForPlayback: true, cwd: dir };
+  ctx = { link: async () => null, player: new Player(), waitForPlayback: true, cwd: dir, autoLaunch: false };
   await call('new_project', { file: 'song.haku.json', name: 'Tool test', mood: 'sunny-cafe', seed: 5 });
 });
 
@@ -75,7 +75,7 @@ describe('tools on a project file', () => {
     expect(parseProject(JSON.parse(await readFile(join(dir, 'copy.haku.json'), 'utf8'))).name).toBe('Tool test');
   });
 
-  it('asks for a file when no bridge is running', async () => {
-    await expect(call('describe', {})).rejects.toThrow(/No project file given/);
+  it('asks for a file or haku web when no tab is connected and auto-launch is off', async () => {
+    await expect(call('describe', {})).rejects.toThrow(/haku web.*project file/);
   });
 });

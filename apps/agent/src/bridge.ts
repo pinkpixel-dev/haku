@@ -20,7 +20,7 @@ export interface Link {
   close(): Promise<void>;
 }
 
-export const NO_TAB = 'No Haku tab is connected. Open Haku in a browser (it connects on its own), or pass a project file.';
+export const NO_TAB = 'No Haku tab is connected. Run "haku web" to open one, or pass a project file.';
 const DEFAULT_TIMEOUT = 20_000;
 
 export function bridgePort(): number {
