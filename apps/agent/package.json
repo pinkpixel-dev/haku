@@ -1,0 +1,39 @@
+{
+  "name": "@pinkpixel/haku",
+  "version": "0.1.0",
+  "description": "Draw lofi music from the terminal or an AI agent. The Haku CLI and MCP server.",
+  "license": "Apache-2.0",
+  "author": "Pink Pixel <admin@pinkpixel.dev> (https://pinkpixel.dev)",
+  "type": "module",
+  "bin": {
+    "haku": "./dist/cli.mjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "^2.4.0",
+    "@resvg/resvg-js": "^2.6.2",
+    "@tonejs/midi": "^2.0.28",
+    "commander": "^15.0.0",
+    "node-web-audio-api": "^2.2.0",
+    "tone": "^15.1.22",
+    "ws": "^8.22.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@haku/audio": "workspace:*",
+    "@haku/core": "workspace:*",
+    "@haku/protocol": "workspace:*",
+    "@types/node": "^26.6.6",
+    "@types/ws": "^8.18.2",
+    "tsdown": "^0.23.4"
+  }
+}

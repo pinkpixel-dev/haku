@@ -7,7 +7,7 @@ You sketch a line and Haku reads it as a melody: left to right is time, up and d
 There's also a CLI and an MCP server, so AI agents can draw music with the same tools you use.
 
 > [!NOTE]
-> Haku is early. The web app is all there: draw loops, build songs out of scenes, save your work, and export WAV or MIDI. The CLI and the MCP server for agents are next. See `DOCS/ROADMAP.md`.
+> Haku is early. The web app is all there (draw loops, build songs out of scenes, save your work, export WAV or MIDI), and so are the CLI and the MCP server. What's left is mostly polish. See `DOCS/ROADMAP.md`.
 
 ## What it does (so far)
 
@@ -18,6 +18,7 @@ There's also a CLI and an MCP server, so AI agents can draw music with the same 
 - **Comes with moods.** Rainy study, late-night train, sunny café, dusk walk, and snowy window. Each one sets the tempo, key, chords, band, and mix.
 - **Sounds like lofi.** Sampled upright piano, Wurlitzer, glock, marimba, and harp, synth keys, pads, plucks, and bass, and a real drum kit, all run through tape warmth, wobble, reverb, vinyl crackle, and rain.
 - **Exports MIDI** with a track per layer, and renders WAV offline (the browser and Node use the same audio code, so they sound the same).
+- **Lets agents draw too.** The `haku` CLI and the MCP server have a tool for every command, plus snapshots, analysis, playback, and export. They work on project files, or live on the tab you have open.
 
 ## Running it
 
@@ -56,9 +57,28 @@ pnpm samples:build   # makes assets/samples/ again
 
 The two rain recordings come from Freesound, which needs a login, so those get downloaded by hand. `DOCS/SPIKES.md` has the exact files and where they go.
 
+## Agents and the CLI
+
+Haku comes with a CLI and an MCP server, so an AI agent (or you, from a terminal) can draw music with the same commands the canvas uses. Point your MCP client at the server:
+
+```bash
+claude mcp add haku -- node /absolute/path/to/haku/apps/agent/src/cli.ts mcp
+```
+
+With Haku open in a browser, the agent works live on that tab. You hear and see every change, and Ctrl+Z still works. Without a tab, tools work on `.haku.json` files instead and render audio offline. A quick taste from the terminal:
+
+```bash
+pnpm haku new-project -f lofi.haku.json --mood rainy-study
+pnpm haku draw-shape -f lofi.haku.json --shape wave --x 0 --y 0.5 --width 1 --height 0.4 --cycles 2
+pnpm haku snapshot -f lofi.haku.json --out lofi.png
+pnpm haku play -f lofi.haku.json
+```
+
+`DOCS/AGENTS.md` covers the setup, the browser link, and every tool.
+
 ## Using the engine from code
 
-Everything goes through commands, which is also how the CLI and MCP server will work:
+Everything goes through commands, the same ones the CLI and MCP server use:
 
 ```ts
 import { createProject, buildSceneScore, describeProject } from '@haku/core';
@@ -78,7 +98,7 @@ The canvas is 0 to 1 on both axes. x spans the whole scene and y = 0 is the top 
 
 ## Credits
 
-The sounds come from VSCO 2 CE, Big Rusty Drums, Greg Sullivan's Wurlitzer EP200, and two rain recordings from Freesound. The Wurlitzer is CC-BY 3.0, and everything else is CC0. Full details are in `DOCS/CREDITS.md`.
+The sounds come from VSCO 2 CE, Big Rusty Drums, Greg Sullivan's Wurlitzer EP200, and two rain recordings from Freesound. The Wurlitzer is CC-BY 3.0, and everything else is CC0. Snapshots use the Figtree font (SIL Open Font License). Full details are in `DOCS/CREDITS.md`.
 
 ## License
 

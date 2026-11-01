@@ -16,7 +16,9 @@
     "typecheck": "pnpm -r typecheck",
     "samples:fetch": "node scripts/samples/fetch.mjs",
     "samples:build": "node scripts/samples/build.mjs",
-    "render": "node scripts/render.mjs"
+    "render": "node scripts/render.mjs",
+    "haku": "node apps/agent/src/cli.ts",
+    "build:agent": "pnpm --filter @pinkpixel/haku build"
   },
   "devDependencies": {
     "@haku/audio": "workspace:*",

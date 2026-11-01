@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
 import { BRUSH_IDS, type BrushId, type StrokePoint } from '@haku/core';
 import { engine, type PlayMode } from './audio/engine.ts';
+import { agentLink } from './bridge/link.ts';
+import { useAgentLink } from './bridge/useAgentLink.ts';
 import { DrawCanvas, type Tool } from './canvas/DrawCanvas.tsx';
 import type { Box } from './canvas/render.ts';
 import { useProject, type ProjectApi } from './state/useProject.ts';
@@ -51,6 +53,13 @@ export function App() {
 
 type DialogName = 'projects' | 'export' | 'credits' | null;
 
+const LINK_LABELS = { connected: 'Agent connected', waiting: 'Agent link', off: 'Agent link off' } as const;
+const LINK_TITLES = {
+  connected: 'An agent can read and edit this loop through the Haku MCP server or CLI. Click to disconnect.',
+  waiting: 'Waiting for the Haku MCP server or `haku bridge` on this machine. Click to stop looking.',
+  off: 'Let AI agents connect to this tab. Click to turn on.',
+} as const;
+
 function Studio({ api }: { api: ProjectApi }) {
   const { project, scene, message, error, run, undo, redo } = api;
   // Remember the selected layer per scene, so switching scenes and back keeps your place.
@@ -64,6 +73,7 @@ function Studio({ api }: { api: ProjectApi }) {
   const playing = useSyncExternalStore(subscribe, () => engine.playing);
   const mode = useSyncExternalStore(subscribe, () => engine.mode);
   const playingSceneId = usePlayingScene(playing && mode === 'song');
+  const linkState = useAgentLink(api);
 
   useEffect(() => void engine.load(), []);
   useEffect(() => engine.update(project), [project]);
@@ -167,8 +177,20 @@ function Studio({ api }: { api: ProjectApi }) {
         <ScenesBar project={project} scene={scene} playingSceneId={playingSceneId} run={run} />
       </main>
       <SidePanel project={project} scene={scene} playing={playing} run={run} />
-      <footer className={`statusbar ${error || status.state === 'error' ? 'statusbar--error' : ''}`} role="status" aria-live="polite">
-        {statusText}
+      <footer className={`statusbar ${error || status.state === 'error' ? 'statusbar--error' : ''}`}>
+        <span className="statusbar__text" role="status" aria-live="polite">
+          {statusText}
+        </span>
+        <button
+          type="button"
+          className={`statusbar__link statusbar__link--${linkState}`}
+          aria-pressed={linkState !== 'off'}
+          title={LINK_TITLES[linkState]}
+          onClick={() => agentLink.setEnabled(linkState === 'off')}
+        >
+          <span className="statusbar__dot" aria-hidden="true" />
+          {LINK_LABELS[linkState]}
+        </button>
       </footer>
 
       <ProjectsDialog open={dialog === 'projects'} onClose={() => setDialog(null)} current={project} onOpen={api.open} onNew={api.newProject} notify={api.notify} />

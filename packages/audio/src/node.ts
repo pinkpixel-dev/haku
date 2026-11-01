@@ -14,6 +14,8 @@ export function setupNodeAudio() {
     if (k !== 'AudioContext' && !(k in g)) g[k] = v;
   }
   g.window ??= globalThis;
+  // Tone prints a version banner to stdout on load, which would corrupt an MCP server's stdio stream.
+  g.TONE_SILENCE_LOGGING = true;
 }
 
 export async function readManifest(dir: string): Promise<SampleManifest> {

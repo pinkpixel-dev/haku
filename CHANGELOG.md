@@ -68,5 +68,16 @@
 - Warmer walnut tones taken from the Haku icon, a faint grain on the panels, and Fraunces for panel titles
 - Under 1400px wide, the key, chords, bars, and mood controls move to a second row of the top bar instead of getting squeezed
 
+### 🤖 Agents
+- `haku` CLI and MCP server with a tool for every command, plus `new_project`, `open_project`, `save_project`, `batch`, `play`, `stop`, `snapshot`, `analyze`, `export`, and `status`
+- Work on a `.haku.json` file, or live on the open Haku tab through a localhost bridge (the MCP server hosts it, or run `haku bridge`)
+- Agent changes in the tab go through undo like your own, and a batch of commands undoes in one step
+- Snapshots of a scene as a PNG (chords, notes, strokes, and a legend), so agents that can see images can check their work
+- Analysis of chord fit, notes outside the key, clashes between layers, and loudness in LUFS from an offline render
+- Offline playback through the system's audio player when no tab is connected
+- `haku exec` runs a file of commands (or stdin) as one all-or-nothing step
+- "Agent connected" toggle in the status bar to switch the browser link on or off
+
 ### 🧰 Tooling
 - `pnpm render` renders each mood (or a saved project) to WAV and prints peak, RMS, and LUFS
+- `pnpm haku` runs the CLI from source, and `pnpm build:agent` bundles it for npm with the samples included

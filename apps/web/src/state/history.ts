@@ -48,6 +48,13 @@ export function record(h: History, cmd: Command, next: Project, now = Date.now()
   };
 }
 
+/** Several commands sent together (an agent's batch) become one undo step that never merges. */
+export function recordBatch(h: History, cmds: readonly Command[], next: Project, now = Date.now()): History {
+  if (cmds.every((c) => VIEW_ONLY.has(c.type))) return { ...h, present: next, last: null };
+  if (cmds.length === 1) return record(h, cmds[0]!, next, now);
+  return { past: [...h.past, h.present].slice(-HISTORY_LIMIT), present: next, future: [], last: null };
+}
+
 /** Undo keeps the scene you're looking at, so stepping back doesn't yank the view around. */
 function keepView(target: Project, from: Project): Project {
   if (target.activeSceneId === from.activeSceneId || !target.scenes.some((s) => s.id === from.activeSceneId)) return target;
