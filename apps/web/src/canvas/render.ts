@@ -58,6 +58,8 @@ export function renderCanvas(ctx: CanvasRenderingContext2D, input: RenderInput) 
   };
 
   ctx.clearRect(0, 0, w, height);
+  // Strokes leave a fat lineWidth behind; every frame starts from a hairline.
+  ctx.lineWidth = 1;
 
   // Chord strip.
   ctx.fillStyle = colors.sunken;

@@ -40,5 +40,23 @@
 - Tempo, key, chords, bars, and mood in the top bar
 - Keyboard shortcuts: Space plays and stops, 1 to 5 pick brushes, E toggles the eraser
 
+### 💾 Projects
+- Projects save on their own to the browser's IndexedDB, and the last one you had open comes back on reload
+- Projects dialog to open, delete, or start a new loop from a mood
+- Save a project as a `.haku.json` file and import it again (imports get their own id, so nothing gets overwritten)
+- Undo and redo for every change, with slider drags merged into one step (Ctrl+Z, Ctrl+Shift+Z or Ctrl+Y)
+
+### 🎞️ Scenes and song
+- Scene tabs under the canvas, with new, duplicate, rename, and remove
+- Arrangement strip: add scenes to the song, reorder them, and set how many times each one plays
+- Loop and Song playback modes. In Song mode the playing scene's chip lights up, and the canvas shows the playhead while that scene is on screen
+
+### 📤 Export
+- WAV export of the current scene (played twice) or the whole song, rendered in the browser
+- MIDI export of the scene or the whole song
+
+### 📜 Credits
+- Credits dialog listing every sound source with its license, plus the libraries and fonts Haku uses
+
 ### 🧰 Tooling
 - `pnpm render` renders each mood (or a saved project) to WAV and prints peak, RMS, and LUFS

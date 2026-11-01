@@ -3,7 +3,11 @@ import { createRoot } from 'react-dom/client';
 import '@fontsource-variable/figtree';
 import '@fontsource-variable/fraunces';
 import './styles/tokens.css';
-import './styles/app.css';
+import './styles/base.css';
+import './styles/layout.css';
+import './styles/controls.css';
+import './styles/scenes.css';
+import './styles/dialogs.css';
 import { App } from './App.tsx';
 
 createRoot(document.getElementById('root')!).render(

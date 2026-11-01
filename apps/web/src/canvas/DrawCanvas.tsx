@@ -23,7 +23,7 @@ const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 export function DrawCanvas({ project, scene, activeLayerId, tool, size, onStroke, onErase }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const score = useMemo(() => buildSceneScore(project), [project]);
+  const score = useMemo(() => buildSceneScore(project, scene.id), [project, scene.id]);
 
   // Everything the frame loop reads lives in one ref, so redraws never wait on React.
   const live = useRef({
@@ -59,7 +59,9 @@ export function DrawCanvas({ project, scene, activeLayerId, tool, size, onStroke
     resize();
 
     const loop = () => {
-      const beat = engine.beat();
+      // In song mode only show the playhead while this scene is the one sounding.
+      const pos = engine.position();
+      const beat = pos && pos.sceneId === props.current.scene.id ? pos.beat : null;
       const playing = beat !== null;
       if (live.current.dirty || playing || wasPlaying) {
         const p = props.current;

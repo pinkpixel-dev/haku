@@ -7,7 +7,7 @@ You sketch a line and Haku reads it as a melody: left to right is time, up and d
 There's also a CLI and an MCP server, so AI agents can draw music with the same tools you use.
 
 > [!NOTE]
-> Haku is early. The music engine, the audio engine, and a working web app are done, so you can draw and hear loops right now. The cozy look, saving, the CLI, and the MCP server are still being built. See `DOCS/ROADMAP.md`.
+> Haku is early. You can draw loops, build songs out of scenes, save your work, and export WAV or MIDI right now. The cozy look (window scene and all), the CLI, and the MCP server are still being built. See `DOCS/ROADMAP.md`.
 
 ## What it does (so far)
 
@@ -28,7 +28,14 @@ pnpm install
 pnpm --filter @haku/web dev
 ```
 
-Then open http://localhost:5178, draw on the canvas, and press play (or Space). The number keys 1 to 5 pick brushes and E switches to the eraser. Right now a reload starts a fresh loop, since saving isn't in yet.
+Then open http://localhost:5178, draw on the canvas, and press play (or Space). The number keys 1 to 5 pick brushes and E switches to the eraser.
+
+A few more things worth knowing:
+
+- Your loop saves on its own in the browser, and it's still there when you come back. The folder button in the top bar lists your projects, starts new ones, and saves or imports `.haku.json` files.
+- Ctrl+Z undoes and Ctrl+Shift+Z (or Ctrl+Y) redoes.
+- Scenes live under the canvas. Add or duplicate one, then build the song in the strip next to them. Switch the top bar from Loop to Song to hear the whole thing.
+- The download button exports WAV or MIDI, for the current scene or the whole song.
 
 To run the tests and typecheck everything:
 
