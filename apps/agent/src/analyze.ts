@@ -22,6 +22,7 @@ export interface LayerStats {
   range?: string;
   /** Share of notes on beats 1 and 3 that are chord tones. Tonal layers only. */
   strongBeatChordTones?: number;
+  /** Notes outside the key that aren't tones of the chord under them either. */
   outOfKey?: number;
   averageVelocity: number;
   /** Longest stretch without a note starting or sounding, in beats. */
@@ -35,7 +36,7 @@ export interface SceneStats {
   name: string;
   bars: number;
   layers: LayerStats[];
-  /** Notes from different drawn layers sounding a half step apart at the same time. */
+  /** Notes from different drawn layers sounding a minor 2nd or minor 9th apart at the same time. */
   clashes: { beat: number; notes: string }[];
 }
 
@@ -95,7 +96,11 @@ export function analyzeScenes(project: Project, sceneIds: string[]): SceneStats[
         ...base,
         range: notes.length ? `${noteName(Math.min(...pitches), flats)} to ${noteName(Math.max(...pitches), flats)}` : 'none',
         strongBeatChordTones: strong.length ? round(chordTones / strong.length) : 1,
-        outOfKey: notes.filter((e) => !scale.has(mod12(e.midi))).length,
+        // Notes borrowed from the chord playing underneath (G# over E7 in A minor) aren't wrong.
+        outOfKey: notes.filter((e) => {
+          const pc = mod12(e.midi);
+          return !scale.has(pc) && !chordAt(Math.round(e.time * 4) / 4)?.pcs.includes(pc);
+        }).length,
       };
     });
 
@@ -109,8 +114,9 @@ export function analyzeScenes(project: Project, sceneIds: string[]): SceneStats[
         const b = drawn[j]!;
         if (a.track === b.track) continue;
         const overlap = Math.min(a.time + a.duration, b.time + b.duration) - Math.max(a.time, b.time);
-        const interval = mod12(a.midi - b.midi);
-        if (overlap > 0.1 && (interval === 1 || interval === 11)) {
+        // A minor 2nd or minor 9th rubs. Wider gaps, and major 7ths, sound fine.
+        const gap = Math.abs(a.midi - b.midi);
+        if (overlap > 0.1 && (gap === 1 || gap === 13)) {
           const beat = round(Math.max(a.time, b.time), 2);
           if (!clashes.has(beat)) clashes.set(beat, `${noteName(a.midi, flats)} against ${noteName(b.midi, flats)}`);
         }

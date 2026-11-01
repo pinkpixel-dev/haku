@@ -40,6 +40,18 @@ describe('offline render', () => {
     const { peakDb } = audio.measure(await audio.renderProject(p, bank, { tail: 0.5 }));
     expect(peakDb).toBeLessThan(-90);
   }, 60_000);
+
+  it('survives overlapping renders', async () => {
+    let p = createProject({ mood: 'late-night-train', seed: 1, bars: 1 });
+    p = execute(p, { type: 'add_scene', name: 'B', copy_from: 'A' }).project;
+    p = execute(p, { type: 'arrange', items: [{ scene: 'A' }, { scene: 'B' }] }).project;
+    await audio.renderProject(p, bank, { tail: 0.5 });
+    for (const delay of [0, 5, 20]) {
+      const later = new Promise((r) => setTimeout(r, delay)).then(() => audio.renderProject(p, bank, { scope: 'song', tail: 0.5 }));
+      const results = await Promise.allSettled([audio.renderProject(p, bank, { tail: 0.5 }), later]);
+      expect(results.map((r) => r.status)).toEqual(['fulfilled', 'fulfilled']);
+    }
+  }, 60_000);
 });
 
 describe('trackKey', () => {

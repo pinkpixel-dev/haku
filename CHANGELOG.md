@@ -6,6 +6,16 @@
 - Adding a layer is now a full-width "Add layer" button that opens an instrument picker, instead of a small + next to a dropdown
 - The Layers panel is wider and roomier, with more space between layers and their settings
 
+### 🎵 Snapping
+- Smart harmony now follows chords that borrow notes from outside the key. Over E7 in A minor, offbeat notes use G# and skip G, instead of mixing both. This fixes the sour notes over chords like the `V7b9` in Late night and the `iv6` in Snowfall and Sunday walk, and over any major-key progression used in a minor key. Existing strokes may snap a little differently under those chords
+
+### 🔍 Analyze
+- Clashes now only count notes a minor 2nd or minor 9th apart. Notes two octaves apart and major 7ths no longer show up as clashes
+- "Out of key" no longer counts notes that belong to the chord playing underneath
+
+### 🐛 Fixes
+- WAV exports and `analyze` no longer fail with "Attempting to connect nodes from different contexts" when two renders run at the same time, like when an agent calls `analyze` and `export` together. Renders now wait their turn
+
 ### 🏷️ Versioning
 - Bumped to 0.2.1
 

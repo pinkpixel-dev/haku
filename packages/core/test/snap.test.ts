@@ -29,6 +29,17 @@ describe('smart snapping', () => {
     expect(snapPitch(65, ctx({ strength: 'medium' }))).not.toBe(65);
   });
 
+  it('bends the scale to chords that borrow notes from outside the key', () => {
+    // E13 over A minor brings in G#, F#, and C#. Their natural neighbors (G, F, C, A) drop out.
+    const aMinorE13 = ctx({ key: { tonic: 'A', mode: 'minor' }, chord: { root: 7, quality: '13' }, strength: 'weak' });
+    const allowed = allowedPcs(aMinorE13).sort((a, b) => a - b);
+    expect(allowed).toEqual([1, 2, 4, 6, 8, 11]);
+    // A chord that fits the key leaves the scale alone.
+    expect(allowedPcs(ctx({ strength: 'weak' })).sort((a, b) => a - b)).toEqual([0, 2, 4, 5, 7, 9, 11]);
+    // Plain scale mode keeps the key's scale as asked.
+    expect(allowedPcs({ ...aMinorE13, mode: 'scale' })).toContain(7);
+  });
+
   it('treats long notes like strong beats', () => {
     expect(chordPcs(0, 'maj7')).toContain(mod12(snapPitch(62.2, ctx({ strength: 'weak', long: true }))));
   });

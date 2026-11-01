@@ -37,7 +37,19 @@ export function scoreFor(project: Project, opts: RenderOptions = {}): Score {
   return opts.scope === 'song' ? buildArrangementScore(project) : loopScore(buildSceneScore(project, opts.sceneId), opts.loops ?? 1);
 }
 
-export async function renderProject(project: Project, bank: SampleBank, opts: RenderOptions = {}): Promise<PcmAudio> {
+/**
+ * Tone.Offline swaps Tone's global context while it runs, so two overlapping renders would build
+ * nodes on each other's context. Renders wait their turn instead.
+ */
+let queue: Promise<unknown> = Promise.resolve();
+
+export function renderProject(project: Project, bank: SampleBank, opts: RenderOptions = {}): Promise<PcmAudio> {
+  const run = queue.then(() => renderNow(project, bank, opts));
+  queue = run.catch(() => {});
+  return run;
+}
+
+async function renderNow(project: Project, bank: SampleBank, opts: RenderOptions): Promise<PcmAudio> {
   const score = scoreFor(project, opts);
   const sampleRate = opts.sampleRate ?? 44100;
   const seconds = LEAD_IN + beatsToSeconds(score.beats, score.bpm) + (opts.tail ?? 3);

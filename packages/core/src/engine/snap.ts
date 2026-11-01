@@ -2,7 +2,7 @@
 //
 // In "smart" mode, notes on strong beats (and long notes anywhere) land on chord tones, notes on
 // the other beats can use any scale tone except the clashing "avoid notes", and offbeat passing notes
-// can use the whole scale. Ties go to whichever candidate is closer to the previous note, which keeps
+// can use the whole scale (bent to fit chords that borrow notes from outside the key). Ties go to whichever candidate is closer to the previous note, which keeps
 // melodies stepping smoothly instead of jumping around.
 
 import { chordPcs, type ChordRef } from '../theory/chords.ts';
@@ -31,11 +31,21 @@ export interface SnapContext {
   prev?: number;
 }
 
+/**
+ * The key's scale bent to fit the chord. When a chord brings in a note from outside the key (G# in
+ * E7 over A minor), scale tones a half step from it drop out, so G and G# never both show up.
+ * Chord tones always stay.
+ */
+function fittedScale(scale: number[], chord: number[]): number[] {
+  const outside = chord.filter((pc) => !scale.includes(pc));
+  return scale.filter((pc) => chord.includes(pc) || !outside.some((o) => mod12(pc - o) === 1 || mod12(o - pc) === 1));
+}
+
 /** The pitch classes a note is allowed to land on in this context. */
 export function allowedPcs(ctx: SnapContext): number[] {
   const tonic = tonicPc(ctx.key);
-  const scale = scalePcs(ctx.key);
   const chord = chordPcs(mod12(tonic + ctx.chord.root), ctx.chord.quality);
+  const scale = ctx.mode === 'smart' ? fittedScale(scalePcs(ctx.key), chord) : scalePcs(ctx.key);
   switch (ctx.mode) {
     case 'chromatic':
       return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
