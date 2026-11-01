@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 - Unreleased
+## 0.1.0 - October 31, 2026
 
 ### 🎼 Music engine
 - Turn drawn strokes into notes, with x as time and y as pitch, read on each brush's grid
@@ -77,6 +77,7 @@
 - Offline playback through the system's audio player when no tab is connected
 - `haku exec` runs a file of commands (or stdin) as one all-or-nothing step
 - "Agent connected" toggle in the status bar to switch the browser link on or off
+- The CLI and MCP server are on npm as `@pinkpixel/haku`, with the samples, fonts, license, and credits included
 
 ### 🧰 Tooling
 - `pnpm render` renders each mood (or a saved project) to WAV and prints peak, RMS, and LUFS

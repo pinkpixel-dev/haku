@@ -16,5 +16,7 @@ export default defineConfig({
   copy: [
     { from: '../../assets/samples', to: 'dist' },
     { from: 'assets/fonts/*', to: 'dist/fonts' },
+    // The samples include a CC-BY instrument, so the license and credits travel with the package.
+    { from: '../../LICENSE', to: 'dist' },
   ],
 });

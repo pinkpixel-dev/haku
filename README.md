@@ -65,6 +65,8 @@ Haku comes with a CLI and an MCP server, so an AI agent (or you, from a terminal
 claude mcp add haku -- node /absolute/path/to/haku/apps/agent/src/cli.ts mcp
 ```
 
+The CLI is also on npm, so you can skip the repo entirely: `npx @pinkpixel/haku mcp` runs the server, and `npm install -g @pinkpixel/haku` gives you the `haku` command. The npm version works on project files. Live mode still needs the web app running from this repo.
+
 With Haku open in a browser, the agent works live on that tab. You hear and see every change, and Ctrl+Z still works. Without a tab, tools work on `.haku.json` files instead and render audio offline. A quick taste from the terminal:
 
 ```bash
