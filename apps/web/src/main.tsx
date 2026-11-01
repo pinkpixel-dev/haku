@@ -8,6 +8,7 @@ import './styles/layout.css';
 import './styles/controls.css';
 import './styles/scenes.css';
 import './styles/dialogs.css';
+import './styles/window.css';
 import { App } from './App.tsx';
 
 createRoot(document.getElementById('root')!).render(

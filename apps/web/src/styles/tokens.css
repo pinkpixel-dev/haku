@@ -3,23 +3,29 @@
   --font-ui: 'Figtree Variable', 'Figtree', sans-serif;
   --font-display: 'Fraunces Variable', 'Fraunces', serif;
 
-  --bg: oklch(0.2 0.008 60);
-  --surface: oklch(0.232 0.009 60);
-  --raised: oklch(0.27 0.01 60);
-  --sunken: oklch(0.18 0.007 60);
-  --border: oklch(0.33 0.011 60);
-  --border-strong: oklch(0.42 0.014 60);
+  /* Walnut charcoal: the dark wood of the icon, pulled way down. */
+  --bg: oklch(0.2 0.014 50);
+  --surface: oklch(0.232 0.016 50);
+  --raised: oklch(0.275 0.018 50);
+  --sunken: oklch(0.178 0.012 50);
+  --border: oklch(0.335 0.019 50);
+  --border-strong: oklch(0.43 0.024 52);
 
-  --text: oklch(0.95 0.006 80);
-  --text-muted: oklch(0.72 0.012 70);
-  --text-faint: oklch(0.56 0.012 70);
+  --text: oklch(0.95 0.008 75);
+  --text-muted: oklch(0.73 0.016 65);
+  --text-faint: oklch(0.57 0.016 60);
 
+  /* The vinyl label, the leaves, and the warm wood. */
   --coral: oklch(0.73 0.11 35);
   --coral-strong: oklch(0.78 0.12 35);
   --coral-ink: oklch(0.24 0.04 35);
   --sage: oklch(0.72 0.06 145);
-  --wood: oklch(0.74 0.07 65);
+  --wood: oklch(0.62 0.08 55);
+  --wood-dark: oklch(0.42 0.06 50);
   --danger: oklch(0.68 0.15 25);
+
+  /* A faint grain for panels, warm-tinted and very low alpha. */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 0.9 0 0 0 0 0.78 0 0 0 0.035 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 
   --focus: oklch(0.85 0.09 70);
 

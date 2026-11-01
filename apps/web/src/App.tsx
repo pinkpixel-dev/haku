@@ -166,7 +166,7 @@ function Studio({ api }: { api: ProjectApi }) {
         <DrawCanvas project={project} scene={scene} activeLayerId={activeLayerId} tool={tool} size={size} onStroke={onStroke} onErase={onErase} />
         <ScenesBar project={project} scene={scene} playingSceneId={playingSceneId} run={run} />
       </main>
-      <SidePanel project={project} scene={scene} run={run} />
+      <SidePanel project={project} scene={scene} playing={playing} run={run} />
       <footer className={`statusbar ${error || status.state === 'error' ? 'statusbar--error' : ''}`} role="status" aria-live="polite">
         {statusText}
       </footer>

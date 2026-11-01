@@ -1,10 +1,11 @@
 import { useMemo } from 'react';
 import { Download, FolderOpen, Info, Loader2, Play, Redo2, Repeat, Square, Undo2 } from 'lucide-react';
-import { MODES, MOOD_IDS, MOODS, PROGRESSION_PRESETS, PROGRESSIONS, resolveProgression, type Project, type Scene } from '@haku/core';
+import { MODES, PROGRESSION_PRESETS, PROGRESSIONS, resolveProgression, type Project, type Scene } from '@haku/core';
 import type { Command } from '@haku/protocol';
 import type { EngineStatus, PlayMode } from '../audio/engine.ts';
 import type { SaveState } from '../state/useProject.ts';
 import { IconButton, Select } from './controls.tsx';
+import { MoodPicker } from './MoodPicker.tsx';
 
 const TONICS = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'] as const;
 const BARS = [1, 2, 4, 8, 16] as const;
@@ -107,13 +108,7 @@ export function TopBar(p: Props) {
           options={BARS.map((b) => ({ value: String(b), label: `${b} ${b === 1 ? 'bar' : 'bars'}` }))}
           onChange={(b) => run({ type: 'update_scene', scene: scene.id, bars: Number(b) })}
         />
-        <Select
-          label="Mood"
-          hideLabel
-          value={project.mood ?? ''}
-          options={[...(project.mood ? [] : [{ value: '', label: 'Pick a mood' }]), ...MOOD_IDS.map((id) => ({ value: id, label: MOODS[id].label }))]}
-          onChange={(mood) => mood && run({ type: 'set_mood', scene: scene.id, mood: mood as (typeof MOOD_IDS)[number] })}
-        />
+        <MoodPicker project={project} sceneId={scene.id} run={run} />
       </div>
 
       <div className="topbar__actions">

@@ -4,7 +4,7 @@
   height: 100dvh;
   display: grid;
   grid-template-columns: 264px minmax(0, 1fr) 284px;
-  grid-template-rows: 56px minmax(0, 1fr) 30px;
+  grid-template-rows: auto minmax(0, 1fr) 30px;
   grid-template-areas:
     'top top top'
     'layers stage side'
@@ -18,8 +18,10 @@
   gap: var(--space-5);
   padding: 0 var(--space-4);
   border-bottom: 1px solid var(--border);
-  background: var(--surface);
+  background-color: var(--surface);
+  background-image: var(--grain);
   min-width: 0;
+  min-height: 56px;
 }
 
 .topbar > div {
@@ -137,16 +139,27 @@
 
 .side {
   grid-area: side;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
   border-left: 1px solid var(--border);
+}
+
+/* The window stays put; band and mix scroll under it. */
+.side__scroll {
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
+  border-top: 1px solid var(--border);
 }
 
 .panel {
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
+  background-image: var(--grain);
   padding: var(--space-4);
-  background: var(--surface);
+  background-color: var(--surface);
   min-height: 0;
 }
 
@@ -160,8 +173,9 @@
 
 .panel__title {
   margin: 0;
-  font-size: var(--text-sm);
-  font-weight: 650;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 560;
   color: var(--text-muted);
 }
 
@@ -300,7 +314,8 @@
   gap: var(--space-3);
   padding: var(--space-2) var(--space-3);
   border-bottom: 1px solid var(--border);
-  background: var(--surface);
+  background-color: var(--surface);
+  background-image: var(--grain);
 }
 
 .toolbar__size {
@@ -378,6 +393,20 @@
 
 /* ---------- Narrower screens ---------- */
 
+/* Under 1400px the music controls (key, chords, bars, mood) drop to a second row. */
+@media (max-width: 1400px) {
+  .topbar {
+    flex-wrap: wrap;
+    row-gap: 0;
+    padding-top: 9px;
+  }
+  .topbar__music {
+    order: 3;
+    flex-basis: 100%;
+    padding: 8px 0 10px;
+  }
+}
+
 @media (max-width: 1180px) {
   .app {
     grid-template-columns: 228px minmax(0, 1fr) 248px;
@@ -408,6 +437,9 @@
   }
   .topbar > div {
     flex-wrap: wrap;
+  }
+  .side__scroll {
+    overflow: visible;
   }
   .layers.panel,
   .side {

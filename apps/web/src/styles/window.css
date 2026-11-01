@@ -1,0 +1,178 @@
+/* ---------- Window panel ---------- */
+
+.window-panel {
+  flex: none;
+  gap: var(--space-2);
+}
+
+.panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.field--compact .select {
+  height: 28px;
+  font-size: var(--text-xs);
+  width: auto;
+}
+
+.window-frame {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  aspect-ratio: 320 / 206;
+}
+
+.window-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.window-weather {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* The plant sways once per bar while music plays. Transform only. */
+.window-art__plant {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+
+.window-art__plant.is-swaying {
+  animation: plant-sway var(--sway-duration, 3.3s) ease-in-out infinite;
+}
+
+@keyframes plant-sway {
+  0%,
+  100% {
+    transform: rotate(-2.2deg);
+  }
+  50% {
+    transform: rotate(2.2deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .window-art__plant.is-swaying {
+    animation: none;
+  }
+}
+
+/* ---------- Mood picker ---------- */
+
+.mood-picker {
+  position: relative;
+}
+
+.mood-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 10px 0 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--sunken);
+  font-size: var(--text-sm);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color var(--fast) var(--ease);
+}
+
+.mood-button:hover,
+.mood-button[aria-expanded='true'] {
+  border-color: var(--border-strong);
+}
+
+.mood-button svg:last-child {
+  color: var(--text-faint);
+}
+
+.mood-button__thumb {
+  width: 34px;
+  height: auto;
+  border-radius: 4px;
+}
+
+.mood-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 30;
+  display: grid;
+  grid-template-columns: repeat(5, 132px);
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  background-color: var(--surface);
+  background-image: var(--grain);
+  animation: pop-in 140ms var(--ease);
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+.mood-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px 6px 8px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--fast) var(--ease), border-color var(--fast) var(--ease);
+}
+
+.mood-card:hover {
+  background: var(--raised);
+}
+
+.mood-card[aria-pressed='true'] {
+  border-color: var(--coral);
+  background: var(--raised);
+}
+
+.mood-card__art {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  margin-bottom: 4px;
+}
+
+.mood-card__name {
+  font-weight: 650;
+  font-size: var(--text-sm);
+}
+
+.mood-card__meta {
+  font-size: var(--text-xs);
+  color: var(--text-faint);
+}
+
+/* On narrow screens the picker becomes a sheet pinned to the viewport. */
+@media (max-width: 920px) {
+  .mood-popover {
+    position: fixed;
+    top: 12dvh;
+    left: 12px;
+    right: 12px;
+    max-height: 76dvh;
+    overflow-y: auto;
+    grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  }
+}

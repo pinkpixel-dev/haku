@@ -58,5 +58,15 @@
 ### 📜 Credits
 - Credits dialog listing every sound source with its license, plus the libraries and fonts Haku uses
 
+### 🪟 Window and moods
+- A window at the top of the right column showing the view outside: rain, dusk, night city, sunny, or snow, drawn as flat cel-shaded scenes with a wooden frame, a hanging vine, and a potted plant
+- Moving weather on the glass: rain streaks, snow, drifting petals, and twinkling stars, plus droplets sliding down whenever the rain sound is on
+- The weather speeds up while music plays, and the plant sways once per bar (both stay still with reduced motion turned on)
+- A mood picker with a little window for each mood, plus its key and tempo. Works with arrow keys, Enter, and Escape
+
+### 🎨 Look
+- Warmer walnut tones taken from the Haku icon, a faint grain on the panels, and Fraunces for panel titles
+- Under 1400px wide, the key, chords, bars, and mood controls move to a second row of the top bar instead of getting squeezed
+
 ### 🧰 Tooling
 - `pnpm render` renders each mood (or a saved project) to WAV and prints peak, RMS, and LUFS

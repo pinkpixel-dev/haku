@@ -7,7 +7,7 @@ You sketch a line and Haku reads it as a melody: left to right is time, up and d
 There's also a CLI and an MCP server, so AI agents can draw music with the same tools you use.
 
 > [!NOTE]
-> Haku is early. You can draw loops, build songs out of scenes, save your work, and export WAV or MIDI right now. The cozy look (window scene and all), the CLI, and the MCP server are still being built. See `DOCS/ROADMAP.md`.
+> Haku is early. The web app is all there: draw loops, build songs out of scenes, save your work, and export WAV or MIDI. The CLI and the MCP server for agents are next. See `DOCS/ROADMAP.md`.
 
 ## What it does (so far)
 
@@ -36,6 +36,7 @@ A few more things worth knowing:
 - Ctrl+Z undoes and Ctrl+Shift+Z (or Ctrl+Y) redoes.
 - Scenes live under the canvas. Add or duplicate one, then build the song in the strip next to them. Switch the top bar from Loop to Song to hear the whole thing.
 - The download button exports WAV or MIDI, for the current scene or the whole song.
+- The mood button in the top bar shows a little window for each mood. The window in the right column follows the mood, but you can pick a different view outside whenever you want.
 
 To run the tests and typecheck everything:
 
