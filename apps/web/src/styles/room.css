@@ -1,0 +1,568 @@
+/* ---------- The room behind the app ----------
+   Flat cel shading throughout: hard color stops, offset shadows with no blur, and lamp light as
+   flat translucent shapes rather than glows. Nothing here takes pointer events. */
+
+.room {
+  --window-w: min(64vw, 1180px);
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  /* Vertical planks in two tones with a dark seam between them. */
+  background-color: var(--wall);
+  background-image:
+    var(--grain),
+    repeating-linear-gradient(
+      90deg,
+      var(--wall) 0 84px,
+      var(--wall-seam) 84px 87px,
+      var(--wall-shade) 87px 171px,
+      var(--wall-seam) 171px 174px
+    );
+}
+
+/* ---------- Beams ---------- */
+
+.room__beam {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 22px;
+  background-color: var(--beam);
+  background-image: var(--grain);
+  border-bottom: 4px solid var(--wall-seam);
+  box-shadow: inset 0 -3px 0 var(--beam-light);
+}
+
+.room__brace {
+  position: absolute;
+  top: 16px;
+  width: 26vw;
+  height: 20px;
+  background-color: var(--beam);
+  background-image: var(--grain);
+  border-top: 3px solid var(--beam-light);
+  border-bottom: 3px solid var(--wall-seam);
+}
+
+.room__brace--left {
+  right: calc(50% + var(--window-w) / 2 - 8px);
+  transform-origin: right center;
+  rotate: -13deg;
+}
+
+.room__brace--right {
+  left: calc(50% + var(--window-w) / 2 - 8px);
+  transform-origin: left center;
+  rotate: 13deg;
+}
+
+/* ---------- The window ---------- */
+
+.room-window {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  width: var(--window-w);
+  height: calc(var(--window-peek) + 104px);
+  translate: -50% 0;
+  border: 11px solid var(--frame);
+  border-top-color: var(--frame-dark);
+  border-bottom-color: var(--frame-dark);
+  border-radius: 0 0 8px 8px;
+  background: var(--wall-seam);
+  box-shadow: 0 0 0 3px var(--frame-dark);
+}
+
+.room-window__glass {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+.room-window__view,
+.room-window__weather {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Six panes and a transom bar, each mullion with a lighter left edge. */
+.room-window__panes {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, var(--frame-light) 0 2px, var(--frame) 2px 9px, transparent 9px),
+    linear-gradient(
+      to bottom,
+      transparent calc(34% - 4px),
+      var(--frame-light) calc(34% - 4px) calc(34% - 2px),
+      var(--frame) calc(34% - 2px) calc(34% + 4px),
+      transparent calc(34% + 4px)
+    );
+  background-size:
+    calc(100% / 6) 100%,
+    100% 100%;
+  background-position:
+    -4px 0,
+    0 0;
+  background-repeat: repeat-x, no-repeat;
+}
+
+/* Two faint reflections on the glass. */
+.room-window__panes::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(115deg, transparent 18%, oklch(1 0 0 / 0.05) 18% 21%, transparent 21%),
+    linear-gradient(115deg, transparent 62%, oklch(1 0 0 / 0.04) 62% 63.5%, transparent 63.5%);
+}
+
+.room__garland {
+  position: absolute;
+  top: 0;
+  left: calc(50% - var(--window-w) / 2 - 26px);
+  width: min(560px, 38vw);
+  height: auto;
+}
+
+/* ---------- Lantern ---------- */
+
+.lantern {
+  position: absolute;
+  top: 0;
+  left: calc(var(--gutter) / 2 - 20px);
+  width: 40px;
+  scale: 1.25;
+  transform-origin: top center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.lantern__chain {
+  width: 3px;
+  height: calc(var(--window-peek) * 0.8);
+  background: repeating-linear-gradient(to bottom, var(--frame-dark) 0 5px, transparent 5px 7px);
+}
+
+.lantern__cap {
+  width: 40px;
+  height: 12px;
+  background: var(--frame-dark);
+  clip-path: polygon(28% 0, 72% 0, 100% 100%, 0 100%);
+}
+
+.lantern__body {
+  position: relative;
+  width: 32px;
+  height: 46px;
+  background: var(--lamp);
+  border: 3px solid var(--frame-dark);
+  border-radius: 3px;
+}
+
+/* The middle bar of the lantern's cage. */
+.lantern__body::before {
+  content: '';
+  position: absolute;
+  inset: 0 calc(50% - 1px);
+  background: var(--frame-dark);
+  opacity: 0.55;
+}
+
+.lantern__flame {
+  position: absolute;
+  left: 50%;
+  bottom: 6px;
+  width: 9px;
+  height: 15px;
+  translate: -50% 0;
+  border-radius: 50% 50% 45% 45% / 62% 62% 38% 38%;
+  background: var(--paper);
+  box-shadow: inset 0 -5px 0 var(--coral-strong);
+}
+
+.lantern__base {
+  width: 38px;
+  height: 8px;
+  background: var(--frame-dark);
+  clip-path: polygon(0 0, 100% 0, 82% 100%, 18% 100%);
+}
+
+/* Lamp light: flat translucent circles, stepped like cel shading. */
+.lantern__light {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--window-peek) + 42px);
+  width: 230px;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: var(--lamp-pool);
+  opacity: 0.08;
+}
+
+.lantern__light--wide {
+  width: 440px;
+  opacity: 0.045;
+}
+
+/* ---------- Vines ---------- */
+
+.room__vine {
+  position: absolute;
+  top: 0;
+  height: auto;
+}
+
+.room__vine--left {
+  left: 2px;
+}
+
+.room__vine--left-2 {
+  left: calc(var(--gutter) - 14px);
+  top: 18px;
+}
+
+.room__vine--right {
+  right: 2px;
+}
+
+.room__vine--right-2 {
+  right: calc(var(--gutter) - 14px);
+  top: 26px;
+}
+
+/* ---------- Photo on the wall ---------- */
+
+.photo {
+  position: absolute;
+  left: calc(var(--gutter) + 74px);
+  bottom: calc(var(--desk-h) + 168px);
+  width: 92px;
+  padding: 6px 6px 20px;
+  background: var(--paper);
+  border-radius: 2px;
+  rotate: -7deg;
+  box-shadow: 4px 5px 0 var(--wall-seam);
+}
+
+.photo svg {
+  display: block;
+  width: 100%;
+  height: 66px;
+}
+
+.photo__pin {
+  position: absolute;
+  top: -4px;
+  left: 12px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--coral);
+  box-shadow: inset -2px -2px 0 color-mix(in oklch, var(--coral) 70%, black);
+}
+
+.photo__pin--right {
+  left: auto;
+  right: 12px;
+}
+
+/* ---------- Desk ---------- */
+
+.desk {
+  position: absolute;
+  inset: auto 0 0;
+  height: var(--desk-h);
+  border-top: 7px solid var(--desk-light);
+  background-color: var(--desk);
+  background-image:
+    var(--grain),
+    repeating-linear-gradient(to bottom, var(--desk) 0 22px, var(--desk-edge) 22px 24px);
+  box-shadow: 0 -5px 0 var(--wall-seam);
+}
+
+/* Window light on the desk, as flat slanted patches. */
+.desk__sun {
+  position: absolute;
+  bottom: 0;
+  height: 100%;
+  background: var(--lamp-pool);
+  opacity: 0.14;
+  transform: skewX(-38deg);
+}
+
+.desk__sun--a {
+  left: 30%;
+  width: 70px;
+}
+
+.desk__sun--b {
+  left: 36%;
+  width: 34px;
+}
+
+.desk__sun--c {
+  left: 63%;
+  width: 96px;
+}
+
+.petal {
+  position: absolute;
+  width: 17px;
+  height: 9px;
+  border-radius: 60% 40% 60% 40%;
+  background: var(--petal);
+  box-shadow: inset -4px -2px 0 color-mix(in oklch, var(--petal) 75%, black);
+}
+
+/* ---------- Books ---------- */
+
+.books {
+  position: absolute;
+  left: calc(var(--gutter) - 8px);
+  bottom: calc(var(--desk-h) - 14px);
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.book {
+  --book: var(--book-red);
+  width: 30px;
+  height: 150px;
+  border-radius: 3px 3px 2px 2px;
+  background-color: var(--book);
+  border-left: 4px solid color-mix(in oklch, var(--book) 72%, black);
+  /* Gilt bands near the top and bottom of each spine. */
+  background-image: linear-gradient(
+    to bottom,
+    transparent 14px,
+    var(--book-band) 14px 17px,
+    transparent 17px 21px,
+    var(--book-band) 21px 23px,
+    transparent 23px calc(100% - 26px),
+    var(--book-band) calc(100% - 26px) calc(100% - 23px),
+    transparent calc(100% - 23px)
+  );
+  box-shadow: 3px 0 0 var(--wall-seam);
+}
+
+.book--green {
+  --book: var(--book-green);
+  width: 26px;
+  height: 172px;
+}
+
+.book--blue {
+  --book: var(--book-blue);
+  width: 34px;
+  height: 160px;
+}
+
+.book--plum {
+  --book: var(--book-plum);
+  width: 24px;
+  height: 138px;
+}
+
+.book--lean {
+  --book: var(--book-red);
+  width: 28px;
+  height: 144px;
+  margin-left: 18px;
+  transform-origin: bottom left;
+  rotate: 11deg;
+}
+
+/* ---------- Mug ---------- */
+
+.mug {
+  position: absolute;
+  left: calc(var(--gutter) + 196px);
+  bottom: calc(var(--desk-h) - 30px);
+  width: 82px;
+  height: 84px;
+}
+
+.mug__saucer {
+  position: absolute;
+  bottom: 0;
+  left: -8px;
+  width: 96px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--frame-light);
+  box-shadow: inset 0 -5px 0 var(--frame);
+}
+
+.mug__handle {
+  position: absolute;
+  right: 0;
+  top: 20px;
+  width: 30px;
+  height: 34px;
+  border: 7px solid var(--paper);
+  border-radius: 50%;
+}
+
+.mug__body {
+  position: absolute;
+  bottom: 9px;
+  left: 4px;
+  width: 58px;
+  height: 66px;
+  display: grid;
+  place-items: center;
+  padding-top: 8px;
+  border-radius: 5px 5px 18px 18px;
+  background: var(--paper);
+  box-shadow: inset -9px 0 0 color-mix(in oklch, var(--paper) 86%, black);
+}
+
+/* Coffee at the rim. */
+.mug__body::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 7px;
+  border-radius: 5px 5px 50% 50%;
+  background: var(--wood-dark);
+}
+
+.mug__body svg {
+  width: 40px;
+  height: auto;
+}
+
+/* ---------- Sheet music ---------- */
+
+.sheet {
+  position: absolute;
+  left: 50%;
+  bottom: -30px;
+  width: 400px;
+  height: 120px;
+  translate: -50% 0;
+  display: flex;
+}
+
+.sheet__page {
+  flex: 1;
+  display: block;
+  padding: 12px 10px;
+  background: var(--paper);
+  border-radius: 10px 10px 0 0;
+}
+
+.sheet__page--left {
+  transform-origin: bottom right;
+  rotate: -3deg;
+  box-shadow: inset -12px 0 0 color-mix(in oklch, var(--paper) 90%, black);
+}
+
+.sheet__page--right {
+  transform-origin: bottom left;
+  rotate: 3deg;
+  box-shadow: inset 12px 0 0 color-mix(in oklch, var(--paper) 90%, black);
+}
+
+.sheet__notes {
+  display: block;
+  width: 100%;
+  height: 72px;
+}
+
+/* ---------- Art classes for the inline SVGs ---------- */
+
+.art-leaf {
+  fill: var(--leaf);
+}
+
+.art-leaf-shade {
+  fill: var(--leaf-shade);
+}
+
+.art-vine {
+  stroke: var(--vine);
+}
+
+.art-fur {
+  fill: var(--fur);
+}
+
+.art-fur-light {
+  fill: var(--fur-light);
+}
+
+.art-fur-dark {
+  fill: var(--fur-dark);
+}
+
+.art-fur-stroke {
+  stroke: var(--fur);
+}
+
+.art-fur-light-stroke {
+  stroke: var(--fur-light);
+}
+
+.art-fur-dark-stroke {
+  stroke: var(--fur-dark);
+}
+
+.art-ear,
+.art-petal {
+  fill: var(--petal);
+}
+
+.art-blush {
+  stroke: var(--petal);
+  opacity: 0.55;
+}
+
+.art-flower-heart {
+  fill: var(--book-band);
+}
+
+.art-ink {
+  stroke: var(--coral-ink);
+}
+
+.art-ink-fill {
+  fill: var(--coral-ink);
+}
+
+.art-staff {
+  stroke: var(--coral-ink);
+  opacity: 0.45;
+}
+
+/* ---------- Smaller screens: keep the walls, drop the clutter ---------- */
+
+@media (max-width: 1320px) {
+  .lantern,
+  .room__vine--left-2,
+  .room__vine--right-2 {
+    display: none;
+  }
+}
+
+@media (max-width: 1180px), (max-height: 800px) {
+  .photo,
+  .books,
+  .mug {
+    display: none;
+  }
+}
+
+@media (max-width: 920px) {
+  .room > :not(.room__beam) {
+    display: none;
+  }
+}

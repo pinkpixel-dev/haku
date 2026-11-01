@@ -37,7 +37,7 @@ A few more things worth knowing:
 - Ctrl+Z undoes and Ctrl+Shift+Z (or Ctrl+Y) redoes.
 - Scenes live under the canvas. Add or duplicate one, then build the song in the strip next to them. Switch the top bar from Loop to Song to hear the whole thing.
 - The download button exports WAV or MIDI, for the current scene or the whole song.
-- The mood button in the top bar shows a little window for each mood. The window in the right column follows the mood, but you can pick a different view outside whenever you want.
+- The mood button in the top bar shows a little window for each mood. The big window at the top of the room follows the mood, but you can pick a different view outside under Ambience in the Mix panel whenever you want.
 
 To run the tests and typecheck everything:
 

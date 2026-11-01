@@ -3,6 +3,7 @@ import { Headphones, Plus, Trash2, VolumeX } from 'lucide-react';
 import { DRUM_KITS, HARMONY_MODES, INSTRUMENT_IDS, INSTRUMENTS, type InstrumentId, type Scene } from '@haku/core';
 import type { Command } from '@haku/protocol';
 import { IconButton, Select, Slider, titleCase } from './controls.tsx';
+import { Sprig } from './room/art.tsx';
 
 interface Props {
   scene: Scene;
@@ -21,7 +22,7 @@ export function LayerPanel({ scene, activeLayerId, onSelect, run }: Props) {
   return (
     <section className="panel layers" aria-labelledby="layers-title">
       <h2 id="layers-title" className="panel__title">
-        Layers
+        Layers <Sprig />
       </h2>
 
       <ul className="layer-list">

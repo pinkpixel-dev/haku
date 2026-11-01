@@ -10,6 +10,8 @@ import { CreditsDialog } from './ui/CreditsDialog.tsx';
 import { ExportDialog } from './ui/ExportDialog.tsx';
 import { LayerPanel } from './ui/LayerPanel.tsx';
 import { ProjectsDialog } from './ui/ProjectsDialog.tsx';
+import { Vine } from './ui/room/art.tsx';
+import { Room } from './ui/room/Room.tsx';
 import { ScenesBar } from './ui/ScenesBar.tsx';
 import { SidePanel } from './ui/SidePanel.tsx';
 import { ToolBar } from './ui/ToolBar.tsx';
@@ -143,6 +145,7 @@ function Studio({ api }: { api: ProjectApi }) {
 
   return (
     <div className="app">
+      <Room project={project} playing={playing} />
       <TopBar
         project={project}
         scene={scene}
@@ -173,10 +176,13 @@ function Studio({ api }: { api: ProjectApi }) {
           onTool={setTool}
           onClear={() => activeLayerId && run({ type: 'erase', scene: scene.id, layer: activeLayerId, all: true })}
         />
-        <DrawCanvas project={project} scene={scene} activeLayerId={activeLayerId} tool={tool} size={size} onStroke={onStroke} onErase={onErase} />
-        <ScenesBar project={project} scene={scene} playingSceneId={playingSceneId} run={run} />
+        <div className="stage__frame">
+          <DrawCanvas project={project} scene={scene} activeLayerId={activeLayerId} tool={tool} size={size} onStroke={onStroke} onErase={onErase} />
+          <ScenesBar project={project} scene={scene} playingSceneId={playingSceneId} run={run} />
+        </div>
+        <Vine className="stage__vine" length={280} seed={29} horizontal />
       </main>
-      <SidePanel project={project} scene={scene} playing={playing} run={run} />
+      <SidePanel project={project} scene={scene} run={run} />
       <footer className={`statusbar ${error || status.state === 'error' ? 'statusbar--error' : ''}`}>
         <span className="statusbar__text" role="status" aria-live="polite">
           {statusText}

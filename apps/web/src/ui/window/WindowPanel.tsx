@@ -1,40 +1,43 @@
-// The window at the top of the right column. The scene follows the project's `window` setting,
-// the weather moves faster while music plays, and the plant sways once per bar.
+// The big window across the top of the room. The view follows the project's `window` setting
+// (sliced from the same SVG scenes the mood thumbnails use), the weather moves faster while music
+// plays, and wooden mullions split it into panes. Purely decorative, so it's hidden from readers.
 
 import { useEffect, useRef } from 'react';
-import { WINDOW_SCENES, type Project } from '@haku/core';
-import type { Command } from '@haku/protocol';
-import { Select } from '../controls.tsx';
-import { SCENES } from './scenes.tsx';
+import type { Project } from '@haku/core';
+import { GLASS, SCENES } from './scenes.tsx';
 import { Weather, type WeatherState } from './weather.ts';
-import { WindowArt } from './WindowArt.tsx';
 
 interface Props {
   project: Project;
   playing: boolean;
-  run: (cmd: Command) => void;
 }
+
+/** Weather units per CSS pixel. Above 1 so drops and petals read at this size. */
+const WEATHER_SCALE = 1.4;
 
 const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-export function WindowPanel({ project, playing, run }: Props) {
+export function WindowPanel({ project, playing }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const state = useRef<WeatherState>({ scene: project.window, wetGlass: false, speed: 0.45 });
   state.current = { scene: project.window, wetGlass: project.mix.rain.enabled, speed: playing ? 1 : 0.45 };
+  const Art = SCENES[project.window].art;
 
   useEffect(() => {
     const canvas = canvasRef.current!;
     const ctx = canvas.getContext('2d')!;
-    const weather = new Weather();
+    let weather: Weather | null = null;
     let frame = 0;
     let last = performance.now();
 
     const resize = () => {
       const dpr = window.devicePixelRatio || 1;
       const { width, height } = canvas.getBoundingClientRect();
+      if (!width || !height) return;
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
-      ctx.setTransform((width * dpr) / 320, 0, 0, (height * dpr) / 206, 0, 0);
+      ctx.setTransform(dpr * WEATHER_SCALE, 0, 0, dpr * WEATHER_SCALE, 0, 0);
+      weather = new Weather({ x: 0, y: 0, w: width / WEATHER_SCALE, h: height / WEATHER_SCALE });
     };
     const ro = new ResizeObserver(resize);
     ro.observe(canvas);
@@ -44,7 +47,7 @@ export function WindowPanel({ project, playing, run }: Props) {
       // Cap the step so a background tab doesn't dump a minute of rain at once.
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
-      weather.frame(ctx, reducedMotion() ? 0 : dt, state.current);
+      weather?.frame(ctx, reducedMotion() ? 0 : dt, state.current);
       frame = requestAnimationFrame(loop);
     };
     frame = requestAnimationFrame(loop);
@@ -55,24 +58,14 @@ export function WindowPanel({ project, playing, run }: Props) {
   }, []);
 
   return (
-    <section className="panel window-panel" aria-labelledby="window-title">
-      <div className="panel__head">
-        <h2 id="window-title" className="panel__title">
-          Window
-        </h2>
-        <Select
-          label="View outside"
-          hideLabel
-          className="field--compact"
-          value={project.window}
-          options={WINDOW_SCENES.map((w) => ({ value: w, label: SCENES[w].label }))}
-          onChange={(view) => run({ type: 'set_project', window: view })}
-        />
+    <div className="room-window" aria-hidden="true">
+      <div className="room-window__glass">
+        <svg className="room-window__view" viewBox={`${GLASS.x} ${GLASS.y} ${GLASS.w} ${GLASS.h}`} preserveAspectRatio="xMidYMax slice">
+          <Art />
+        </svg>
+        <canvas ref={canvasRef} className="room-window__weather" />
+        <div className="room-window__panes" />
       </div>
-      <div className="window-frame">
-        <WindowArt scene={project.window} swaySeconds={(60 / project.bpm) * 4} swaying={playing} />
-        <canvas ref={canvasRef} className="window-weather" aria-hidden="true" />
-      </div>
-    </section>
+    </div>
   );
 }

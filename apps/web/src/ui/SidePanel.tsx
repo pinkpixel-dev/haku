@@ -1,20 +1,21 @@
-// The band (backing chords, bass, drums) and the lofi mix.
+// The band (backing chords, bass, drums), the lofi mix, and the ambience (rain and the view out
+// the window). The cat sleeps on top.
 
-import { BASS_STYLES, CHORD_INSTRUMENTS, COMP_STYLES, GROOVE_IDS, INSTRUMENTS, RAIN_KINDS, type Project, type Scene } from '@haku/core';
+import { BASS_STYLES, CHORD_INSTRUMENTS, COMP_STYLES, GROOVE_IDS, INSTRUMENTS, RAIN_KINDS, WINDOW_SCENES, type Project, type Scene } from '@haku/core';
 import type { Command } from '@haku/protocol';
 import { Select, Slider, Switch, titleCase } from './controls.tsx';
-import { WindowPanel } from './window/WindowPanel.tsx';
+import { Cat, Sprig } from './room/art.tsx';
+import { SCENES } from './window/scenes.tsx';
 
 interface Props {
   project: Project;
   scene: Scene;
-  playing: boolean;
   run: (cmd: Command) => void;
 }
 
 const opts = <T extends string>(ids: readonly T[], label: (id: T) => string = titleCase) => ids.map((value) => ({ value, label: label(value) }));
 
-export function SidePanel({ project, scene, playing, run }: Props) {
+export function SidePanel({ project, scene, run }: Props) {
   const b = scene.backing;
   const m = project.mix;
   const backing = (patch: Omit<Extract<Command, { type: 'set_backing' }>, 'type' | 'scene'>) => run({ type: 'set_backing', scene: scene.id, ...patch });
@@ -22,11 +23,13 @@ export function SidePanel({ project, scene, playing, run }: Props) {
 
   return (
     <aside className="side">
-      <WindowPanel project={project} playing={playing} run={run} />
+      <div className="side__cat">
+        <Cat />
+      </div>
       <div className="side__scroll">
         <section className="panel" aria-labelledby="band-title">
           <h2 id="band-title" className="panel__title">
-            Band
+            Band <Sprig />
           </h2>
 
           <div className="band-part">
@@ -58,16 +61,22 @@ export function SidePanel({ project, scene, playing, run }: Props) {
 
         <section className="panel" aria-labelledby="mix-title">
           <h2 id="mix-title" className="panel__title">
-            Mix
+            Mix <Sprig />
           </h2>
           <Slider label="Master" value={m.master} onChange={(master) => mix({ master })} />
           <Slider label="Warmth" value={m.warmth} onChange={(warmth) => mix({ warmth })} />
           <Slider label="Crackle" value={m.crackle} onChange={(crackle) => mix({ crackle })} />
           <Slider label="Reverb" value={m.reverb} onChange={(reverb) => mix({ reverb })} />
           <Slider label="Wobble" value={m.wobble} onChange={(wobble) => mix({ wobble })} />
-          <div className="band-part">
+          <div className="band-part" role="group" aria-labelledby="ambience-title">
+            <h3 id="ambience-title" className="panel__subtitle">
+              Ambience
+            </h3>
             <Switch label="Rain" checked={m.rain.enabled} onChange={(enabled) => mix({ rain: { enabled } })} />
-            <Select label="Sound" value={m.rain.kind} options={opts(RAIN_KINDS, (k) => (k === 'roof' ? 'Roof window' : 'Window pane'))} onChange={(kind) => mix({ rain: { kind } })} />
+            <div className="field-row">
+              <Select label="Sound" value={m.rain.kind} options={opts(RAIN_KINDS, (k) => (k === 'roof' ? 'Roof window' : 'Window pane'))} onChange={(kind) => mix({ rain: { kind } })} />
+              <Select label="View" value={project.window} options={WINDOW_SCENES.map((w) => ({ value: w, label: SCENES[w].label }))} onChange={(view) => run({ type: 'set_project', window: view })} />
+            </div>
             <Slider label="Level" value={m.rain.level} onChange={(level) => mix({ rain: { level } })} />
           </div>
         </section>

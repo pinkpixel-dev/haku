@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.2.0 - October 31, 2026
+
+### 🏡 Cozy room
+- The app now sits inside a little study: plank walls, beams, a hanging lantern, vines down both sides, and a desk with books, a mug, a pinned photo, sheet music, and petals
+- The window moved out of the side panel and became a wide six-pane window across the top, with the same weather as before
+- A ginger cat naps on top of the Band panel
+- The top bar, toolbar, panels, and canvas sit in carved wood frames, with little leaf sprigs on the panel titles
+- The status bar is now a small plaque on the desk
+
+### 🎨 Canvas
+- Notes are rounded pills with a light highlight, and other layers show a bit stronger than before
+- Strokes are drawn as smooth curves, with beads along the active layer's strokes
+- The chord strip is lighter, so the chord names sit right on the grid
+
+### 🎛️ Controls
+- The view outside the window now lives under Ambience in the Mix panel, next to the rain settings
+- Band and Mix are tighter so more fits on screen
+
+### 🏷️ Versioning
+- Bumped to 0.2.0
+
 ## 0.1.0 - October 31, 2026
 
 ### 🎼 Music engine
