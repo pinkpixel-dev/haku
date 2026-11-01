@@ -76,6 +76,7 @@
   align-items: center;
   gap: var(--space-2);
   flex: 1;
+  flex-wrap: wrap;
   min-width: 0;
   padding-left: var(--space-4);
   border-left: 1px solid var(--border);
@@ -94,7 +95,9 @@
   padding: 2px 0;
   list-style: none;
   flex-wrap: wrap;
-  min-width: 0;
+  /* Fill the row and wrap chips inside, but never shrink below one chip. */
+  flex: 1 1 0;
+  min-width: min-content;
 }
 
 .chip {
@@ -138,7 +141,8 @@
 }
 
 
-@media (max-width: 920px) {
+/* Under 1400px the stage is too narrow for scenes and song side by side. */
+@media (max-width: 1400px) {
   .scenes-bar {
     flex-wrap: wrap;
   }

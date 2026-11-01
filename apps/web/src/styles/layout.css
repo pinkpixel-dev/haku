@@ -598,6 +598,11 @@
     flex-basis: 100%;
     padding: 8px 0 10px;
   }
+  /* Smaller vine so its leaves don't hang over the last chord name. */
+  .stage__vine {
+    width: 210px;
+    right: -16px;
+  }
 }
 
 @media (max-width: 1180px) {
