@@ -1,0 +1,14 @@
+// Hosts the built web app (apps/web/dist) as a static-assets-only Worker.
+// Deploy with `pnpm deploy:web` after `wrangler login`.
+{
+  "name": "haku",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./apps/web/dist",
+    "not_found_handling": "single-page-application"
+  },
+  // One address only: projects live in IndexedDB per origin, so a second
+  // workers.dev address would look like an empty project list.
+  "workers_dev": false,
+  "routes": [{ "pattern": "haku.pinkpixel.dev", "custom_domain": true }]
+}

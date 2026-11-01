@@ -6,7 +6,9 @@ You sketch a line and Haku reads it as a melody: left to right is time, up and d
 
 There's also a CLI and an MCP server, so AI agents can draw music with the same tools you use.
 
-## What it does (so far)
+![Haku with a three-layer loop in the rainy study mood](.github/screenshots/haku.png)
+
+## What it does
 
 - **Turns strokes into notes.** Pencil for eighth-note melodies, brush for long soft notes, chalk for two-note harmonies, spray for sparkles, stamp for one hit per step.
 - **Keeps everything in tune.** Notes on strong beats land on chord tones, and the rest stay in the key. You can also pick plain scale, pentatonic, chord-only, or chromatic snapping per layer.
@@ -17,9 +19,15 @@ There's also a CLI and an MCP server, so AI agents can draw music with the same 
 - **Exports MIDI** with a track per layer, and renders WAV offline (the browser and Node use the same audio code, so they sound the same).
 - **Lets agents draw too.** The `haku` CLI and the MCP server have a tool for every command, plus snapshots, analysis, playback, and export. They work on project files, or live on the tab you have open.
 
+![The mood picker, with a little window for each mood](.github/screenshots/moods.png)
+
 ## Running it
 
-You'll need Node 22.18 or newer and pnpm. Rebuilding the samples also needs ffmpeg with libvorbis.
+The quickest way is the hosted app at https://haku.pinkpixel.dev. In Chrome or Edge you can install it from the address bar, and it keeps working offline once it's loaded.
+
+The hosted app is just the app, though. AI agents can only work live on Haku running on your own machine (see [Agents and the CLI](#agents-and-the-cli)), and projects are saved per address, so the hosted app and a local copy keep separate project lists.
+
+To run it from the repo, you'll need Node 22.18 or newer and pnpm. Rebuilding the samples also needs ffmpeg with libvorbis.
 
 ```bash
 pnpm install
@@ -52,7 +60,7 @@ pnpm samples:fetch   # downloads about 450 MB into assets/sources/ (needs 7z for
 pnpm samples:build   # makes assets/samples/ again
 ```
 
-The two rain recordings come from Freesound, which needs a login, so those get downloaded by hand. `DOCS/SPIKES.md` has the exact files and where they go.
+The two rain recordings come from Freesound, which needs a login, so those get downloaded by hand. Grab [Soft rain on roof window](https://freesound.org/people/Metadex/sounds/235827/) and [January rain on a window](https://freesound.org/people/mmorgaine/sounds/333510/) and save them into `assets/sources/freesound/` with their original names (`235827__metadex__soft-rain-on-roof-window.wav` and `333510__mmorgaine__january-rain-on-a-window.aiff`).
 
 ## Agents and the CLI
 
@@ -73,7 +81,11 @@ pnpm haku snapshot -f lofi.haku.json --out lofi.png
 pnpm haku play -f lofi.haku.json
 ```
 
-`DOCS/AGENTS.md` covers the setup, the browser link, and every tool.
+`snapshot` gives the agent a picture of what it drew, chords and all:
+
+![An agent snapshot of the same loop](.github/screenshots/agent-snapshot.png)
+
+The [package README](apps/agent/README.md) covers the setup, the browser link, environment variables, and every tool.
 
 ## Using the engine from code
 
@@ -97,7 +109,7 @@ The canvas is 0 to 1 on both axes. x spans the whole scene and y = 0 is the top 
 
 ## Credits
 
-The sounds come from VSCO 2 CE, VCSL (vibraphone, kalimba, shaker, and cabasa), the FreePats Spanish classical guitar, Big Rusty Drums, Greg Sullivan's Wurlitzer EP200, and two rain recordings from Freesound. The Wurlitzer is CC-BY 3.0, and everything else is CC0. Snapshots use the Figtree font (SIL Open Font License). Full details are in `DOCS/CREDITS.md`.
+The sounds come from VSCO 2 CE, VCSL (vibraphone, kalimba, shaker, and cabasa), the FreePats Spanish classical guitar, Big Rusty Drums, Greg Sullivan's Wurlitzer EP200, and two rain recordings from Freesound. The Wurlitzer is CC-BY 3.0, and everything else is CC0. Snapshots use the Figtree font (SIL Open Font License). The Credits button in the app lists every source with links, and so does the [package README](apps/agent/README.md#credits).
 
 ## License
 

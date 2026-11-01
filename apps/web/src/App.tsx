@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { BRUSH_IDS, type BrushId, type StrokePoint } from '@haku/core';
 import { engine, type PlayMode } from './audio/engine.ts';
-import { agentLink } from './bridge/link.ts';
+import { agentLink, LINK_AVAILABLE } from './bridge/link.ts';
 import { useAgentLink } from './bridge/useAgentLink.ts';
 import { DrawCanvas, type Tool } from './canvas/DrawCanvas.tsx';
 import type { Box } from './canvas/render.ts';
@@ -222,16 +222,18 @@ function Studio({ api }: { api: ProjectApi }) {
         <span className="statusbar__text" role="status" aria-live="polite">
           {statusText}
         </span>
-        <button
-          type="button"
-          className={`statusbar__link statusbar__link--${linkState}`}
-          aria-pressed={linkState !== 'off'}
-          title={LINK_TITLES[linkState]}
-          onClick={() => agentLink.setEnabled(linkState === 'off')}
-        >
-          <span className="statusbar__dot" aria-hidden="true" />
-          {LINK_LABELS[linkState]}
-        </button>
+        {LINK_AVAILABLE && (
+          <button
+            type="button"
+            className={`statusbar__link statusbar__link--${linkState}`}
+            aria-pressed={linkState !== 'off'}
+            title={LINK_TITLES[linkState]}
+            onClick={() => agentLink.setEnabled(linkState === 'off')}
+          >
+            <span className="statusbar__dot" aria-hidden="true" />
+            {LINK_LABELS[linkState]}
+          </button>
+        )}
       </footer>
 
       <ProjectsDialog open={dialog === 'projects'} onClose={() => setDialog(null)} current={project} onOpen={api.open} onNew={api.newProject} notify={api.notify} />

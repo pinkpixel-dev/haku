@@ -12,6 +12,10 @@ const MIN_DELAY = 1000;
 const MAX_DELAY = 15_000;
 const port = Number(import.meta.env.VITE_HAKU_BRIDGE_PORT) || BRIDGE_PORT;
 
+/** The bridge only accepts tabs from local pages, so the hosted site never tries (and never trips
+ *  the browser's local network permission prompt). */
+export const LINK_AVAILABLE = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
+
 class AgentLink {
   state: LinkState = 'off';
   enabled = localStorage.getItem(ENABLED_KEY) !== 'off';
@@ -33,7 +37,7 @@ class AgentLink {
   }
 
   start() {
-    if (this.enabled && !this.ws && !this.timer) this.connect();
+    if (LINK_AVAILABLE && this.enabled && !this.ws && !this.timer) this.connect();
   }
 
   setEnabled(enabled: boolean) {

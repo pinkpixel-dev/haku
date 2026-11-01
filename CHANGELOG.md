@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.0.0 - November 1, 2026
 
 ### 🎵 Playback
 - New Follow toggle next to Loop and Song. During Song playback the canvas switches to whichever scene is playing. Pick a different scene yourself and Follow turns off, so you don't get pulled back mid-edit. It's remembered between visits
@@ -27,6 +27,17 @@
 
 ### ⚡ Loading
 - Tone.js and the audio engine now load in their own chunk after the page is up, so the main bundle dropped from about 730 kB to about 460 kB
+
+### 🐛 Fixes
+- On windows narrower than 1400px, the song strip gets its own row under the scene tabs. Before, the Add button could cover a song chip's controls, and a long song squeezed the canvas
+- The vine on the canvas frame is smaller on narrower windows, so its leaves stop covering the last chord name
+
+### 🌍 Hosting
+- Haku is live at https://haku.pinkpixel.dev, served from Cloudflare. It installs as an app from there too
+- The agent link only runs when Haku is open on `localhost`, `127.0.0.1`, or `[::1]`. On any other address it stays off and the status bar hides the agent button, so the hosted site never asks for local network access. Use `haku web` for live agent sessions
+
+### 🏷️ Versioning
+- Haku is 1.0.0. The root, the web app, and `@pinkpixel/haku` all move to 1.0.0
 
 ## 0.3.0 - October 31, 2026
 
